@@ -3,10 +3,10 @@ import { Link } from 'react-router-dom';
 import gsap from 'gsap';
 import { CustomEase } from 'gsap/CustomEase';
 
-// Register GSAP CustomEase plugin once
+// Register GSAP CustomEase plugin once safely
 if (typeof window !== 'undefined') {
-  gsap.registerPlugin(CustomEase);
   try {
+    gsap.registerPlugin(CustomEase);
     CustomEase.create('curtainWipeEase', '0.76, 0, 0.24, 1');
   } catch (e) {
     // Fallback if already defined
@@ -39,12 +39,18 @@ export const HeroCurtainCard: React.FC<HeroCurtainCardProps> = ({
   ariaLabel,
   autoPlayInterval = 4000
 }) => {
-  const [currentIndex, setCurrentIndex] = useState(0);
   const [displayedIndex, setDisplayedIndex] = useState(0);
   const [isHovered, setIsHovered] = useState(false);
+  const [isTransitioning, setIsTransitioning] = useState(false);
+
+  const displayedIndexRef = useRef(0);
+  displayedIndexRef.current = displayedIndex;
 
   const isTransitioningRef = useRef(false);
-  const stripsRef = useRef<HTMLDivElement[]>([]);
+  const isHoveredRef = useRef(false);
+  isHoveredRef.current = isHovered;
+
+  const stripsRef = useRef<(HTMLDivElement | null)[]>([]);
   const activeTimelineRef = useRef<gsap.core.Timeline | null>(null);
 
   // Preload all project images for instant zero-latency rendering
@@ -55,11 +61,20 @@ export const HeroCurtainCard: React.FC<HeroCurtainCardProps> = ({
     });
   }, [projects]);
 
+  // Clean up GSAP animation on unmount
+  useEffect(() => {
+    return () => {
+      if (activeTimelineRef.current) {
+        activeTimelineRef.current.kill();
+      }
+    };
+  }, []);
+
   // Transition to a target project with the smooth staggered white curtain wipe
-  const goTo = useCallback(
+  const triggerTransition = useCallback(
     (targetIndex: number) => {
-      if (targetIndex === currentIndex || isTransitioningRef.current) return;
       if (!projects[targetIndex]) return;
+      if (isTransitioningRef.current || targetIndex === displayedIndexRef.current) return;
 
       // Respect prefers-reduced-motion
       const prefersReducedMotion =
@@ -68,22 +83,22 @@ export const HeroCurtainCard: React.FC<HeroCurtainCardProps> = ({
 
       if (prefersReducedMotion) {
         setDisplayedIndex(targetIndex);
-        setCurrentIndex(targetIndex);
         return;
       }
 
       isTransitioningRef.current = true;
-      setCurrentIndex(targetIndex);
+      setIsTransitioning(true);
 
       // Kill any previous animation
       if (activeTimelineRef.current) {
         activeTimelineRef.current.kill();
       }
 
-      const strips = stripsRef.current.filter(Boolean);
+      const strips = stripsRef.current.filter((el): el is HTMLDivElement => Boolean(el));
       if (strips.length === 0) {
         setDisplayedIndex(targetIndex);
         isTransitioningRef.current = false;
+        setIsTransitioning(false);
         return;
       }
 
@@ -95,6 +110,7 @@ export const HeroCurtainCard: React.FC<HeroCurtainCardProps> = ({
           gsap.set(strips, { yPercent: -101 });
           isTransitioningRef.current = false;
           activeTimelineRef.current = null;
+          setIsTransitioning(false);
         }
       });
       activeTimelineRef.current = tl;
@@ -120,19 +136,20 @@ export const HeroCurtainCard: React.FC<HeroCurtainCardProps> = ({
           ease: 'curtainWipeEase'
         });
     },
-    [currentIndex, projects]
+    [projects]
   );
 
   // Automatic carousel rotation (pauses on hover so user can interact comfortably)
   useEffect(() => {
-    if (isHovered || isTransitioningRef.current) return;
-    const timer = setInterval(() => {
-      const nextIdx = (currentIndex + 1) % projects.length;
-      goTo(nextIdx);
+    if (isHovered || isTransitioning || projects.length <= 1) return;
+
+    const timer = setTimeout(() => {
+      const nextIdx = (displayedIndex + 1) % projects.length;
+      triggerTransition(nextIdx);
     }, autoPlayInterval);
 
-    return () => clearInterval(timer);
-  }, [currentIndex, isHovered, autoPlayInterval, projects.length, goTo]);
+    return () => clearTimeout(timer);
+  }, [displayedIndex, isHovered, isTransitioning, autoPlayInterval, projects.length, triggerTransition]);
 
   const currentProject = projects[displayedIndex] || projects[0];
 
@@ -155,7 +172,6 @@ export const HeroCurtainCard: React.FC<HeroCurtainCardProps> = ({
       >
         {/* Underlying project image with sync decoding for zero-blink paint */}
         <img
-          key={currentProject.img}
           src={currentProject.img}
           alt={currentProject.label}
           loading="eager"
@@ -169,7 +185,7 @@ export const HeroCurtainCard: React.FC<HeroCurtainCardProps> = ({
             <div key={i} className="curtain-wipe-col">
               <div
                 ref={(el) => {
-                  if (el) stripsRef.current[i] = el;
+                  stripsRef.current[i] = el;
                 }}
                 className="curtain-wipe-strip"
               />
