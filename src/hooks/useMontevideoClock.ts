@@ -9,7 +9,8 @@ export function useMontevideoClock() {
         const formatted = new Intl.DateTimeFormat('en-GB', {
           hour: '2-digit',
           minute: '2-digit',
-          timeZone: 'America/Montevideo'
+          hour12: false,
+          timeZone: 'Asia/Kolkata'
         }).format(new Date());
         setTime(formatted);
       } catch (e) {

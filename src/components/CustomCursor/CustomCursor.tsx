@@ -10,7 +10,7 @@ export const CustomCursor: React.FC = () => {
   const dotRef = useRef<HTMLDivElement>(null);
   const ringRef = useRef<HTMLDivElement>(null);
   const hoverTagRef = useRef<HTMLDivElement>(null);
-  const [tagText, setTagText] = useState('[ Live View ]');
+  const [tagText, setTagText] = useState('[ Open the case ]');
 
   useEffect(() => {
     // Only activate custom cursor on fine pointer devices (desktop/mouse)
@@ -57,7 +57,7 @@ export const CustomCursor: React.FC = () => {
       if (caseItem) {
         targetTagScale = 1;
         const customLabel = caseItem.getAttribute('data-tag-label');
-        setTagText(customLabel || '[ Live View ]');
+        setTagText(customLabel || '[ Open the case ]');
       } else {
         targetTagScale = 0;
       }

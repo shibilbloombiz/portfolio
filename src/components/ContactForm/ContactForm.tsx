@@ -115,8 +115,8 @@ export const ContactForm: React.FC = () => {
                       setHint('');
                     }
                   }}
-                  style={{ width: `${Math.max(85, (name || 'your name').length * 18)}px` }}
                 />
+                <span className="contact-fld__mirror" aria-hidden="true">{name || 'your name'}</span>
                 <span className="contact-fld__line" aria-hidden="true"></span>
               </label>{' '}
               from{' '}
@@ -129,11 +129,10 @@ export const ContactForm: React.FC = () => {
                   autoComplete="organization"
                   value={company}
                   onChange={(e) => setCompany(e.target.value)}
-                  style={{ width: `${Math.max(75, (company || 'company').length * 18)}px` }}
                 />
+                <span className="contact-fld__mirror" aria-hidden="true">{company || 'company'}</span>
                 <span className="contact-fld__line" aria-hidden="true"></span>
-              </label>
-              .<br className="contact__break" /> We&nbsp;need{' '}
+              </label>.<br className="contact__break" /> We&nbsp;need{' '}
               <span className="contact-chips" role="radiogroup" aria-label="What you need">
                 {(['a website', 'a web system', 'AI automation', 'all of the above'] as const).map((opt) => (
                   <React.Fragment key={opt}>
@@ -165,8 +164,7 @@ export const ContactForm: React.FC = () => {
                     {idx < 2 && <span className="contact-chips__sep"> / </span>}
                   </React.Fragment>
                 ))}
-              </span>
-              . Write back to{' '}
+              </span>. Write back to{' '}
               <span className="contact-tail">
                 <label className={`contact-fld ${badFields.email ? 'is-bad' : ''}`}>
                   <span className="u-sr">Email (required)</span>
@@ -185,11 +183,10 @@ export const ContactForm: React.FC = () => {
                         setHint('');
                       }
                     }}
-                    style={{ width: `${Math.max(120, (email || 'you@email.com').length * 18)}px` }}
                   />
+                  <span className="contact-fld__mirror" aria-hidden="true">{email || 'you@email.com'}</span>
                   <span className="contact-fld__line" aria-hidden="true"></span>
-                </label>
-                .
+                </label>.
               </span>
             </p>
           </fieldset>

@@ -5,6 +5,11 @@ export const Intro: React.FC = () => {
   const [showIntro, setShowIntro] = useState(false);
 
   useEffect(() => {
+    // Only show intro on home page root visit
+    if (window.location.pathname !== '/' && window.location.pathname !== '') {
+      return;
+    }
+
     try {
       const alreadyShown = sessionStorage.getItem('bloombiz-intro');
       if (!alreadyShown) {

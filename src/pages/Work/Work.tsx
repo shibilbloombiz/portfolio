@@ -70,7 +70,6 @@ export const Work: React.FC = () => {
                   data-tone={proj.tone}
                   style={{ '--card-tone': proj.tone } as React.CSSProperties}
                   data-hover-case=""
-                  data-tag-label="[ Live View ]"
                 >
                   <div className="work-grid-card__media">
                     <Link

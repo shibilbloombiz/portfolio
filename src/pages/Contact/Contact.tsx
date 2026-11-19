@@ -46,7 +46,7 @@ export const Contact: React.FC = () => {
             </div>
 
             <div className="contact__row">
-              <p className="home-label contact__muted">Montevideo</p>
+              <p className="home-label contact__muted">HQ / India</p>
               <p className="contact__value">
                 It's <span data-clock="">{time}</span> here
               </p>

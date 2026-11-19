@@ -205,7 +205,6 @@ export const Home: React.FC<HomeProps> = ({ onToggleSystemView }) => {
               data-tone={proj.tone}
               data-work-card={proj.slug}
               data-hover-case=""
-              data-tag-label="[ Live View ]"
               data-motion="hero"
               style={{ zIndex: idx + 1 }}
             >
