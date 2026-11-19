@@ -1,0 +1,13 @@
+{
+  "name": "BloomBiz Techno Hub",
+  "short_name": "BloomBiz",
+  "description": "Web development company engineering every type of website, system, and AI automation.",
+  "start_url": "/",
+  "display": "browser",
+  "background_color": "#ede8db",
+  "theme_color": "#ede8db",
+  "icons": [
+    { "src": "/images/logos/bloombiz-icon.png", "sizes": "85x48", "type": "image/png" },
+    { "src": "/images/logos/bloombiz-logo-white.png", "sizes": "279x77", "type": "image/png" }
+  ]
+}
