@@ -3,7 +3,6 @@ import { Link } from 'react-router-dom';
 import { HeroCurtainCard } from '../../components/HeroCurtainCard/HeroCurtainCard';
 import { KerningInteraction } from '../../components/TypographyInteraction/KerningInteraction';
 import { LEDTicker } from '../../components/LEDTicker/LEDTicker';
-import { VelocityGallery3D } from '../../components/VelocityGallery3D/VelocityGallery3D';
 import { Footer } from '../../components/Footer/Footer';
 
 interface HomeProps {
@@ -28,6 +27,54 @@ export const Home: React.FC<HomeProps> = ({ onToggleSystemView }) => {
     { href: '/work/future-safety/', img: '/images/work/projects/future-1.png', tone: '#241c14', label: 'Future Safety' },
     { href: '/work/sabka/', img: '/images/work/projects/sabka-1.png', tone: '#241538', label: 'Sabka Skill' },
     { href: '/work/ftx/', img: '/images/work/projects/ftx-1.png', tone: '#141f17', label: 'FTX Detailing' }
+  ];
+
+  const featuredProjects = [
+    {
+      slug: 'educarrt',
+      title: 'EduCarrt',
+      line: 'Study Abroad Consultant for a Brighter Future.',
+      tone: '#10223d',
+      img: '/images/work/projects/educarrt-1.png',
+      frame: 'Web / 1440 / 12 cols',
+      externalUrl: 'https://educarrt.com/'
+    },
+    {
+      slug: 'ftx',
+      title: 'FTX Detailing',
+      line: 'Precision, protection, perfection.',
+      tone: '#141f17',
+      img: '/images/work/projects/ftx-1.png',
+      frame: 'Web / 1440 / 12 cols',
+      externalUrl: 'https://ftxdetailing.com/'
+    },
+    {
+      slug: 'novara',
+      title: 'Novara',
+      line: 'Model Novara — minimalism engineered for acoustic purity.',
+      tone: '#1a1a1c',
+      img: '/images/work/projects/novara-1.png',
+      frame: 'Device / Studio 16:9',
+      externalUrl: 'https://novaraaudio.com/'
+    },
+    {
+      slug: 'mocs',
+      title: 'MOCS',
+      line: 'Artisanal charm crafted for timeless ease and natural comfort.',
+      tone: '#361b14',
+      img: '/images/work/projects/mocs-1.png',
+      frame: 'Tablet / 1024 / 12 cols',
+      externalUrl: 'https://mocsartisan.com/'
+    },
+    {
+      slug: 'gadco',
+      title: 'Gadco',
+      line: 'Redefine your lifestyle with timeless modern essentials.',
+      tone: '#18181a',
+      img: '/images/work/projects/gadco-1.png',
+      frame: 'Web / 1440 / 12 cols',
+      externalUrl: 'https://gadco.com/'
+    }
   ];
 
   return (
@@ -149,8 +196,56 @@ export const Home: React.FC<HomeProps> = ({ onToggleSystemView }) => {
           </p>
         </div>
 
-        {/* Motion.dev Scroll Velocity 3D Gallery */}
-        <VelocityGallery3D />
+        <div className="home-stack" data-work-stack="">
+          {featuredProjects.map((proj, idx) => (
+            <Link
+              key={proj.slug}
+              className="home-card"
+              to={`/work/${proj.slug}/`}
+              data-tone={proj.tone}
+              data-work-card={proj.slug}
+              data-hover-case=""
+              data-tag-label="[ Live View ]"
+              data-motion="hero"
+              style={{ zIndex: idx + 1 }}
+            >
+              <div className="home-card__band">
+                <h2 className="home-statement home-card__name" id={`card-${proj.slug}-name`}>
+                  <span>{proj.title}</span>
+                </h2>
+                <p className="home-card__line" id={`card-${proj.slug}-line`}>
+                  <span>{proj.line}</span>
+                </p>
+              </div>
+              <p className="home-card__line home-card__line--below">
+                {proj.line}
+              </p>
+              <div className="home-card__image" data-frame={proj.frame}>
+                <img
+                  src={proj.img}
+                  sizes="calc(100vw - 4em)"
+                  width="2752"
+                  height="1536"
+                  alt={`${proj.title}: ${proj.line}`}
+                  loading="lazy"
+                  decoding="async"
+                />
+                <div className="home-card__overlay">
+                  <a
+                    href={proj.externalUrl || `/work/${proj.slug}/`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="home-card__center-btn"
+                    onClick={(e) => e.stopPropagation()}
+                    aria-label={`Open live website for ${proj.title}`}
+                  >
+                    Live View ↗
+                  </a>
+                </div>
+              </div>
+            </Link>
+          ))}
+        </div>
 
         <div className="home-grid home-work__end">
           <Link className="home-all" to="/work/">
