@@ -187,10 +187,10 @@ vec3 shadeFloor(vec3 p, vec3 rd, bool full) {
     alb = mix(alb, uAccent, smoothstep(0.38, 0.62, tn));
     vec2 tu = toQ(p.xz) - gId;
     float has = step(hash21(gId + 5.1), 0.7) * step(0.9, n.y) * smoothstep(0.2, 0.34, tn) * step(0.04, min(tu.x, tu.y)) * step(max(tu.x, tu.y), 0.96);
-    float ii = floor(hash21(gId + 17.3) * 3.0);
+    float ii = floor(hash21(gId + 17.3) * 9.0);
     vec2 gx = clamp(dFdx(tu), -0.03, 0.03);
     vec2 gy = clamp(dFdy(tu), -0.03, 0.03);
-    vec3 im = textureGrad(uImg, vec2((ii + tu.x) / 3.0, 1.0 - tu.y), gx * vec2(0.3333, -1.0), gy * vec2(0.3333, -1.0)).rgb;
+    vec3 im = textureGrad(uImg, vec2((ii + tu.x) / 9.0, 1.0 - tu.y), gx * vec2(0.111111, -1.0), gy * vec2(0.111111, -1.0)).rgb;
     alb = mix(alb, im * 1.1, has);
   } else {
     alb = uStudC;

@@ -106,34 +106,24 @@ export const HeroTileBackground: React.FC = () => {
 
     // Fast initial 2D canvas fallback while texture loads
     const S = 512;
+    const N = 9;
     const offCanvas = document.createElement('canvas');
-    offCanvas.width = S * 3;
+    offCanvas.width = S * N;
     offCanvas.height = S;
     const ctx = offCanvas.getContext('2d');
     if (ctx) {
-      // Cell 0: Novara
-      ctx.fillStyle = '#f3f0ea';
-      ctx.fillRect(0, 0, S, S);
-      ctx.fillStyle = '#1c1917';
-      ctx.font = 'bold 84px Helvetica Neue, Arial, sans-serif';
-      ctx.textAlign = 'center';
-      ctx.textBaseline = 'middle';
-      ctx.fillText('NOVARA', 256, 256);
-
-      // Cell 1: FTX Detailing
-      ctx.fillStyle = '#0c1208';
-      ctx.fillRect(S, 0, S, S);
-      ctx.fillStyle = '#c6ee2e';
-      ctx.font = 'bold 64px Helvetica Neue, Arial, sans-serif';
-      ctx.fillText('PRECISION', S + 256, 256);
-
-      // Cell 2: EduCarrt
-      ctx.fillStyle = '#f6f3ee';
-      ctx.fillRect(S * 2, 0, S, S);
-      ctx.fillStyle = '#10223d';
-      ctx.font = 'bold 74px Helvetica Neue, Arial, sans-serif';
-      ctx.fillText('EDUCARRT', S * 2 + 256, 256);
-
+      const colors = ['#f3f0ea', '#0c1208', '#f6f3ee', '#1a1a1c', '#18181a', '#14243b', '#361b14', '#201912', '#241538'];
+      const textColors = ['#1c1917', '#c6ee2e', '#10223d', '#ffffff', '#ffffff', '#ffffff', '#ffffff', '#ffffff', '#ffffff'];
+      const labels = ['NOVARA', 'PRECISION', 'EDUCARRT', 'FUTURE', 'GADCO', 'JAKKUR', 'MOCS', 'NAZZI', 'SABKA'];
+      for (let i = 0; i < N; i++) {
+        ctx.fillStyle = colors[i] || '#f3f0ea';
+        ctx.fillRect(i * S, 0, S, S);
+        ctx.fillStyle = textColors[i] || '#1c1917';
+        ctx.font = 'bold 70px Helvetica Neue, Arial, sans-serif';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.fillText(labels[i] || '', i * S + 256, 256);
+      }
       gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, offCanvas);
       gl.generateMipmap(gl.TEXTURE_2D);
     }
