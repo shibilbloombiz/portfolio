@@ -90,11 +90,11 @@ export const Work: React.FC = () => {
                         href={proj.externalUrl || `/work/${proj.slug}/`}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="work-grid-card__tag"
+                        className="btn-bracket work-grid-card__tag"
                         onClick={(e) => e.stopPropagation()}
                         aria-label={`Open live website for ${proj.title}`}
                       >
-                        Live View ↗
+                        [ LIVE VIEW ↗ ]
                       </a>
                     </div>
                   </div>

@@ -234,11 +234,11 @@ export const Home: React.FC<HomeProps> = ({ onToggleSystemView }) => {
                     href={proj.externalUrl || `/work/${proj.slug}/`}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="home-card__center-btn"
+                    className="btn-bracket home-card__center-btn"
                     onClick={(e) => e.stopPropagation()}
                     aria-label={`Open live website for ${proj.title}`}
                   >
-                    Live View ↗
+                    [ LIVE VIEW ↗ ]
                   </a>
                 </div>
               </div>
@@ -247,9 +247,8 @@ export const Home: React.FC<HomeProps> = ({ onToggleSystemView }) => {
         </div>
 
         <div className="home-grid home-work__end">
-          <Link className="home-all" to="/work/">
-            <span>Explore all projects &amp; systems</span>
-            <span className="home-all__arrow" aria-hidden="true">→</span>
+          <Link className="btn-bracket home-all-bracket" to="/work/">
+            [ EXPLORE ALL PROJECTS → ]
           </Link>
         </div>
       </section>

@@ -170,6 +170,19 @@ export const Navigation: React.FC = () => {
                 </Link>
               </nav>
 
+              {/* Desktop CTA: Start A Project button navigating to contact page */}
+              <div className="underlay-nav__action">
+                <Link
+                  to="/contact/"
+                  className="btn-bracket nav-btn-bracket"
+                  onClick={() => setIsOpen(false)}
+                  aria-label="Start a project"
+                >
+                  [ START A PROJECT ]
+                </Link>
+              </div>
+
+              {/* Mobile menu toggle: ONLY visible on mobile */}
               <button
                 data-underlay-nav-toggle=""
                 aria-expanded={isOpen}

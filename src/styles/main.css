@@ -1248,6 +1248,179 @@ body[data-page-tone="dark"] .underlay-nav__center-link.is-active {
   }
 }
 
+/* ==========================================================================
+   Reference Bracket Button Model ([ BUTTON MODEL DESIGN ])
+   Exact recreation of the user's reference image model:
+   - Crisp rectangular tag with subtle 1px border
+   - Pure white/sand background with ink text
+   - Monospace Office Code Pro typography with brackets
+   - Elevating hover state with inverted dark-brown fill
+   ========================================================================== */
+
+.btn-bracket {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.35rem;
+  padding: 0.58rem 1.25rem;
+  background-color: #ffffff;
+  color: var(--dark-brown, #160d08);
+  font-family: 'Office Code Pro', monospace, sans-serif;
+  font-size: 0.82rem;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  text-decoration: none;
+  border: 1px solid rgba(22, 13, 8, 0.16);
+  border-radius: 0;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.06);
+  cursor: pointer;
+  white-space: nowrap;
+  line-height: 1.2;
+  transition: transform 0.22s cubic-bezier(0.16, 1, 0.3, 1),
+              background-color 0.2s ease,
+              color 0.2s ease,
+              border-color 0.2s ease,
+              box-shadow 0.2s ease;
+}
+
+.btn-bracket:hover {
+  background-color: var(--dark-brown, #160d08);
+  color: #ffffff;
+  border-color: var(--dark-brown, #160d08);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.18);
+}
+
+.btn-bracket:active {
+  transform: translateY(0);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.12);
+}
+
+/* Navbar: Start A Project button & Desktop/Mobile display logic */
+.underlay-nav__action {
+  position: absolute;
+  right: 1.5rem;
+  top: 50%;
+  transform: translateY(-50%);
+  display: flex;
+  align-items: center;
+  z-index: 15;
+}
+
+@media screen and (min-width: 1200px) {
+  .underlay-nav__action {
+    right: 2.2rem;
+  }
+}
+
+.nav-btn-bracket {
+  padding: 0.46rem 1.15rem;
+  font-size: 0.78rem;
+  letter-spacing: 0.09em;
+}
+
+body[data-page-tone="dark"] .nav-btn-bracket {
+  background-color: rgba(255, 255, 255, 0.1);
+  color: #ffffff;
+  border-color: rgba(255, 255, 255, 0.25);
+}
+
+body[data-page-tone="dark"] .nav-btn-bracket:hover {
+  background-color: #ffffff;
+  color: var(--dark-brown, #160d08);
+  border-color: #ffffff;
+}
+
+/* Desktop: Menu button removed, Start A Project button active */
+@media screen and (min-width: 768px) {
+  .underlay-nav__toggle {
+    display: none !important;
+  }
+  .underlay-nav__action {
+    display: flex !important;
+  }
+}
+
+/* Mobile: Menu button shown, desktop CTA hidden */
+@media screen and (max-width: 767px) {
+  .underlay-nav__toggle {
+    display: flex !important;
+  }
+  .underlay-nav__action {
+    display: none !important;
+  }
+}
+
+/* Selected Work Card Center Button with Bracket Model */
+.home-card__center-btn.btn-bracket {
+  padding: 0.65rem 1.45rem;
+  font-size: 0.82rem;
+  border-radius: 0;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.18);
+}
+
+/* Home Section Explore All Projects Button */
+.home-all-bracket.btn-bracket {
+  padding: 0.8rem 1.8rem;
+  font-size: 0.86rem;
+  margin-top: 1rem;
+}
+
+/* Contact Page Send Button */
+.contact__send.btn-bracket {
+  padding: 0.85rem 1.85rem;
+  font-size: 0.88rem;
+  border-radius: 0;
+}
+
+/* Work Page Grid Tags */
+.work-grid-card__tag.btn-bracket {
+  padding: 0.48rem 1rem;
+  font-size: 0.74rem;
+  border-radius: 0;
+}
+
+/* Case Study Floating Live Button matching bracket model */
+.case-floating-live {
+  border-radius: 0 !important;
+  padding: 0.55rem 1.25rem !important;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.08) !important;
+}
+
+/* Hero Section: Smooth Top-to-Bottom Carousel Slide System */
+.hero-curtain-card {
+  overflow: hidden !important;
+  border-radius: 4px !important;
+  cursor: pointer;
+}
+
+.home-ph--img {
+  position: relative !important;
+  display: block !important;
+  width: 100% !important;
+  height: 100% !important;
+  overflow: hidden !important;
+}
+
+.hero-slide-img {
+  position: absolute !important;
+  top: 0 !important;
+  left: 0 !important;
+  width: 100% !important;
+  height: 100% !important;
+  object-fit: cover !important;
+  object-position: center !important;
+  display: block !important;
+  will-change: transform !important;
+}
+
+.hero-slide-img--incoming {
+  transform: translate3d(0, -100%, 0) !important;
+  visibility: hidden;
+}
+
+
 
 
 

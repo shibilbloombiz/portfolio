@@ -217,14 +217,13 @@ export const ContactForm: React.FC = () => {
 
           <div className="contact__actions">
             <button
-              className="line-btn contact__send"
+              className="btn-bracket contact__send"
               type="submit"
               data-contact-send=""
               disabled={status === 'submitting'}
             >
-              <span className="line-btn__arrow line-btn__arrow--end" aria-hidden="true">→</span>
-              <span data-contact-send-label="">
-                {status === 'submitting' ? 'Sending...' : 'Send it'}
+              <span>
+                {status === 'submitting' ? '[ SENDING... ]' : '[ SEND MESSAGE → ]'}
               </span>
             </button>
             {hint && (
