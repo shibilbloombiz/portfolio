@@ -1,6 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { HeroCurtainCard } from '../../components/HeroCurtainCard/HeroCurtainCard';
+import { LEDTicker } from '../../components/LEDTicker/LEDTicker';
 import { RibbonTypography } from '../../components/RibbonTypography/RibbonTypography';
 import { Footer } from '../../components/Footer/Footer';
 
@@ -165,8 +166,34 @@ export const Home: React.FC<HomeProps> = () => {
         </div>
       </section>
 
-      {/* SECTION 02: CONTINUOUS KINETIC TYPOGRAPHY RIBBON */}
-      <RibbonTypography />
+      {/* LED Dot-Matrix Text Carousel Under Hero */}
+      <LEDTicker />
+
+      {/* SECTION 02: 01 HELLO */}
+      <section className="home-section home-hello" id="hello" aria-label="Hello">
+        <div className="home-grid home-hello__top">
+          <p className="home-label home-hello__label">
+            <span className="home-label__num" aria-hidden="true">01</span>Hello
+          </p>
+          <p className="home-statement home-hello__lead" data-reveal="" data-spec="">
+            Every solution we build starts with architectural precision and delivers scalable, intelligent systems.
+          </p>
+        </div>
+
+        {/* MIDDLE OF HELLO: Continuous Flowing Typography Ribbon Model (replacing the thin line) */}
+        <div className="home-hello__stage home-hello__stage--ribbon" aria-label="Company Achievements Ribbon">
+          <RibbonTypography embedded={true} />
+        </div>
+
+        <div className="home-grid home-hello__bottom">
+          <p className="home-hello__text" data-reveal="" data-spec="">
+            We are BloomBiz Techno Hub. We build every type of modern website, scalable enterprise system, and bespoke AI automation: production-ready, cloud-ready, future-proof.
+          </p>
+          <p className="home-hello__text home-hello__text--muted" data-reveal="">
+            From high-conversion web experiences to complex automated workflows, delivering engineering excellence is what we do best.
+          </p>
+        </div>
+      </section>
 
       {/* SECTION 03: 02 SELECTED WORK & SYSTEMS */}
       <section className="home-section home-work" id="work" data-header-offset="" aria-label="Work">

@@ -2,9 +2,10 @@ import React, { useEffect, useRef } from 'react';
 
 interface RibbonTypographyProps {
   className?: string;
+  embedded?: boolean;
 }
 
-export const RibbonTypography: React.FC<RibbonTypographyProps> = ({ className = '' }) => {
+export const RibbonTypography: React.FC<RibbonTypographyProps> = ({ className = '', embedded = false }) => {
   const containerRef = useRef<HTMLDivElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
@@ -225,13 +226,15 @@ export const RibbonTypography: React.FC<RibbonTypographyProps> = ({ className = 
       ctx.scale(dpr, dpr);
       ctx.clearRect(0, 0, width, height);
 
-      // Subtle warm ivory ambient paper background gradient
-      const bg = ctx.createLinearGradient(0, 0, 0, height);
-      bg.addColorStop(0, 'rgba(243, 242, 238, 0)');
-      bg.addColorStop(0.5, 'rgba(243, 242, 238, 0.85)');
-      bg.addColorStop(1, 'rgba(243, 242, 238, 0)');
-      ctx.fillStyle = bg;
-      ctx.fillRect(0, 0, width, height);
+      // Subtle warm ivory ambient paper background gradient (when standalone)
+      if (!embedded) {
+        const bg = ctx.createLinearGradient(0, 0, 0, height);
+        bg.addColorStop(0, 'rgba(243, 242, 238, 0)');
+        bg.addColorStop(0.5, 'rgba(243, 242, 238, 0.85)');
+        bg.addColorStop(1, 'rgba(243, 242, 238, 0)');
+        ctx.fillStyle = bg;
+        ctx.fillRect(0, 0, width, height);
+      }
 
       const tSec = time * 0.001;
       const centerY = height * 0.52;
@@ -354,6 +357,18 @@ export const RibbonTypography: React.FC<RibbonTypographyProps> = ({ className = 
       window.removeEventListener('pointerup', onPointerUp);
     };
   }, []);
+
+  if (embedded) {
+    return (
+      <div className={`ribbon-canvas-wrap ribbon-canvas-wrap--embedded ${className}`} ref={containerRef}>
+        <canvas className="ribbon-canvas" ref={canvasRef} aria-hidden="true" />
+        {/* Screen-reader accessible alternative text */}
+        <div className="u-sr">
+          BloomBiz Creatives: 5+ Years of Experience, 100+ Brands Built, 200+ Happy Clients, Creative Thinking, Digital Innovation, India · UAE · KSA.
+        </div>
+      </div>
+    );
+  }
 
   return (
     <section className={`ribbon-typography-section ${className}`} aria-label="Company Achievements Ribbon">

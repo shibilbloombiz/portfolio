@@ -1547,6 +1547,43 @@ body[data-page-tone="dark"] .nav-btn-bracket:hover {
   }
 }
 
+/* Embedded Flowing Kinetic Ribbon inside Hello Section Stage */
+.home-hello__stage--ribbon {
+  position: relative;
+  width: 100%;
+  height: 380px;
+  margin: 2vh 0 3vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: visible;
+}
+
+.ribbon-canvas-wrap--embedded {
+  width: 100%;
+  height: 100%;
+  background: transparent !important;
+  cursor: grab;
+}
+
+.ribbon-canvas-wrap--embedded:active {
+  cursor: grabbing;
+}
+
+@media screen and (max-width: 991px) {
+  .home-hello__stage--ribbon {
+    height: 320px;
+  }
+}
+
+@media screen and (max-width: 767px) {
+  .home-hello__stage--ribbon {
+    height: 250px;
+    margin: 1.5vh 0 2vh;
+  }
+}
+
+
 
 
 
