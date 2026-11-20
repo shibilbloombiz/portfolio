@@ -61,6 +61,18 @@ export const ContactForm: React.FC = () => {
         subject: `New Portfolio Enquiry from ${name} (${company || 'Individual'})`
       };
 
+      // Save to local portfolio database
+      fetch('/api/enquiries', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          name,
+          email,
+          service: need || 'a website',
+          message: `${company ? `[Company: ${company}] ` : ''}${message || ''} (Interest: ${surfaces.join(', ')})`
+        })
+      }).catch(() => {});
+
       const res = await fetch('https://api.web3forms.com/submit', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
