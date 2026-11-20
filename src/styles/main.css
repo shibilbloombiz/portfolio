@@ -1435,18 +1435,85 @@ body[data-page-tone="dark"] .nav-btn-bracket:hover {
 }
 
 /* ==========================================================================
-   Footer "Let's Talk" Generous Gap Spacing
-   Pushes the "Let's talk" section lower down ("little under") so there is
-   ample breathing room between the preceding content and the footer.
+   Footer Compact Height & Viewport Visibility
+   Decreases footer height so visitors can see:
+   1. The top media/social links ("Let's talk ->", email, Instagram, LinkedIn, Behance, Dribbble)
+   2. The text content ("SAY HI. / BRING THE IDEA. / WE'LL BUILD THE SYSTEM.")
+   3. The footer base (copyright & "Back to the top ↑")
+   simultaneously in one clean, balanced screen view without overflow or cut-offs.
    ========================================================================== */
 .footer {
-  margin-top: 14vh !important;
+  margin-top: 4vh !important;
   position: relative !important;
+  overflow: hidden !important;
+}
+
+.footer .animated-footer {
+  min-height: auto !important;
+  height: auto !important;
+  display: flex !important;
+  flex-direction: column !important;
+  justify-content: space-between !important;
+  row-gap: 1.25rem !important;
+  grid-row-gap: 1.25rem !important;
+  padding: 0 !important;
 }
 
 .footer-top {
-  padding-top: calc(90px + 3.5rem) !important;
-  padding-bottom: 2.5rem !important;
+  position: relative !important;
+  z-index: 2 !important;
+  display: flex !important;
+  flex-wrap: wrap !important;
+  align-items: baseline !important;
+  justify-content: space-between !important;
+  gap: 0.75rem 1.5rem !important;
+  padding: 2.2rem var(--about-pad) 0.5rem !important;
+}
+
+.footer-top .footer-talk {
+  font-size: clamp(1.4rem, 2.5vw, 2.2rem) !important;
+}
+
+.footer-top .footer-link {
+  font-size: clamp(0.95rem, 1.25vw, 1.15rem) !important;
+}
+
+.footer .section-resource {
+  min-height: auto !important;
+  flex: 0 0 auto !important;
+  padding: 0 !important;
+  align-items: center !important;
+}
+
+.footer .build_wrapper {
+  padding-top: 1rem !important;
+  padding-bottom: 1rem !important;
+}
+
+.footer .div-block-5 {
+  align-items: flex-start !important;
+  gap: 0.15em !important;
+}
+
+.footer .ready_heading,
+.footer .ready_heading.mobile {
+  font-size: clamp(2.4rem, 5.2vw, 4.8rem) !important;
+  line-height: 0.88 !important;
+  letter-spacing: -0.04em !important;
+  margin: 0 !important;
+  white-space: nowrap !important;
+  text-align: left !important;
+}
+
+.footer .footer-base {
+  padding: 0.85rem var(--about-pad) 1rem !important;
+  margin-top: 0.5rem !important;
+  border-top: 1px solid var(--footer-rule) !important;
+}
+
+.footer .footer-base p,
+.footer .footer-base a {
+  font-size: min(0.9em, 14px) !important;
 }
 
 @media screen and (max-width: 767px) {
@@ -1454,11 +1521,26 @@ body[data-page-tone="dark"] .nav-btn-bracket:hover {
     padding-block: 8vh 6vh !important;
   }
   .footer {
-    margin-top: 10vh !important;
+    margin-top: 3vh !important;
   }
   .footer-top {
-    padding-top: calc(75px + 2rem) !important;
-    padding-bottom: 1.5rem !important;
+    padding: 1.5rem var(--about-pad) 0.5rem !important;
+    display: grid !important;
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    gap: 0.4em 1em !important;
+  }
+  .footer .build_wrapper {
+    padding-top: 0.75rem !important;
+    padding-bottom: 0.75rem !important;
+  }
+  .footer .ready_heading,
+  .footer .ready_heading.mobile {
+    font-size: clamp(1.85rem, 7vw, 2.8rem) !important;
+    line-height: 0.95 !important;
+    white-space: normal !important;
+  }
+  .footer .footer-base {
+    padding: 0.75rem var(--about-pad) 1rem !important;
   }
 }
 
