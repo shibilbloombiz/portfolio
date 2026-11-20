@@ -5,6 +5,9 @@ import { LEDTicker } from '../../components/LEDTicker/LEDTicker';
 import { RibbonTypography } from '../../components/RibbonTypography/RibbonTypography';
 import { Footer } from '../../components/Footer/Footer';
 
+// Code-split and lazy-load WebGL2 Hero Tile Background for zero LCP impact
+const HeroTileBackground = React.lazy(() => import('../../components/HeroTileBackground/HeroTileBackground'));
+
 interface HomeProps {
   onToggleSystemView?: () => void;
 }
@@ -108,6 +111,11 @@ export const Home: React.FC<HomeProps> = () => {
     <div className="home">
       {/* SECTION 01: HERO */}
       <section className="home-section home-hero" id="hero" data-home-hero="" aria-label="Introduction">
+        {/* WebGL2 Tile Field Animated Background */}
+        <React.Suspense fallback={null}>
+          <HeroTileBackground />
+        </React.Suspense>
+
         <div className="home-grid">
           <h1 className="home-hero__title" aria-label="DESIGN. ENGINEER. EVOLVE." data-motion="hero">
             <span className="home-hero__line" data-line="" data-spec="">

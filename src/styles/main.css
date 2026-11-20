@@ -1545,6 +1545,39 @@ body[data-page-tone="dark"] .nav-btn-bracket:hover {
 }
 
 /* ==========================================================================
+   WebGL2 Hero Animated Tile Field Background
+   - Sits strictly behind all hero typography, navigation, and curtain cards
+   - Hardware-accelerated WebGL2 canvas with touch-action: pan-y (no scroll jank)
+   - Solid background color #E9D8CB on hero prevents any layout shift
+   ========================================================================== */
+.home-hero {
+  position: relative !important;
+  background-color: #E9D8CB !important;
+  overflow: hidden !important;
+  touch-action: pan-y !important;
+}
+
+.hero-tile-bg {
+  position: absolute !important;
+  inset: 0 !important;
+  z-index: 0 !important;
+  pointer-events: none !important;
+  overflow: hidden !important;
+  background-color: #E9D8CB !important;
+}
+
+.hero-tile-bg canvas {
+  width: 100% !important;
+  height: 100% !important;
+  display: block !important;
+}
+
+.home-hero > .home-grid {
+  position: relative !important;
+  z-index: 2 !important;
+}
+
+/* ==========================================================================
    Continuous Flowing Kinetic Typography Ribbon Animation
    - Seamless organic S-curves with parametric 3D wave deformation
    - Real typography attached and deformed directly on the ribbon surface
