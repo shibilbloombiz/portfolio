@@ -7,6 +7,7 @@
   "background_color": "#ede8db",
   "theme_color": "#ede8db",
   "icons": [
+    { "src": "/favicon.png", "sizes": "180x180", "type": "image/png" },
     { "src": "/images/logos/bloombiz-icon.png", "sizes": "85x48", "type": "image/png" },
     { "src": "/images/logos/bloombiz-logo-white.png", "sizes": "279x77", "type": "image/png" }
   ]
