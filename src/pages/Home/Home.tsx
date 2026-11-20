@@ -1,15 +1,41 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { HeroCurtainCard } from '../../components/HeroCurtainCard/HeroCurtainCard';
-import { KerningInteraction } from '../../components/TypographyInteraction/KerningInteraction';
 import { LEDTicker } from '../../components/LEDTicker/LEDTicker';
 import { Footer } from '../../components/Footer/Footer';
 
 interface HomeProps {
-  onToggleSystemView: () => void;
+  onToggleSystemView?: () => void;
 }
 
-export const Home: React.FC<HomeProps> = ({ onToggleSystemView }) => {
+export const Home: React.FC<HomeProps> = () => {
+  const services = [
+    {
+      name: 'Websites & Web Applications',
+      note: 'We build any type of custom website, scalable web application, or web system tailored to your business needs.'
+    },
+    {
+      name: 'AI & Automation Integration',
+      note: 'We integrate intelligent AI models, autonomous automations, and smart workflows directly into your web systems.'
+    },
+    {
+      name: 'Custom Enterprise Systems',
+      note: 'End-to-end software architecture, custom portals, cloud databases, and high-load backend infrastructure.'
+    },
+    {
+      name: 'E-Commerce & Digital Platforms',
+      note: 'High-conversion online stores, seamless checkout pipelines, and custom payment / inventory integrations.'
+    },
+    {
+      name: 'Full-Stack Development & APIs',
+      note: 'Clean architectures built with modern frameworks, REST/GraphQL APIs, and resilient cloud deployments.'
+    },
+    {
+      name: 'UI/UX & Interactive Design',
+      note: 'Performance-first design systems, responsive layouts, motion interactions, and fluid user experiences.'
+    }
+  ];
+
   const printProjects = [
     { href: '/work/novara/', img: '/images/work/projects/novara-1.png', tone: '#1a1a1c', label: 'Novara' },
     { href: '/work/mocs/', img: '/images/work/projects/mocs-1.png', tone: '#361b14', label: 'MOCS' },
@@ -253,8 +279,28 @@ export const Home: React.FC<HomeProps> = ({ onToggleSystemView }) => {
         </div>
       </section>
 
-      {/* SECTION 04: 03 THE BORING PART */}
-      <KerningInteraction onToggleSystemView={onToggleSystemView} />
+      {/* SECTION 03: SERVICES (Replaces the boring part with About services design) */}
+      <section className="about-section about-index home-services" id="services" aria-label="Services">
+        <div className="about-grid">
+          <p className="about-label about-index__label">
+            <span className="about-label__num" aria-hidden="true">03</span>Services
+          </p>
+        </div>
+
+        <div className="about-grid about-block">
+          <h2 className="about-title about-block__title" data-spec="">
+            Our Services
+          </h2>
+          <ul className="about-body about-block__list" data-reveal-rule="0.05" data-spec="">
+            {services.map((svc, idx) => (
+              <li key={idx} className="about-row" data-index-row="">
+                <span>{svc.name}</span>
+                <span className="about-row__n">{svc.note}</span>
+              </li>
+            ))}
+          </ul>
+        </div>
+      </section>
 
       {/* FOOTER */}
       <Footer />

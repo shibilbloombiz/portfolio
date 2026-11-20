@@ -1420,6 +1420,49 @@ body[data-page-tone="dark"] .nav-btn-bracket:hover {
   visibility: hidden;
 }
 
+/* ==========================================================================
+   Landing Page Services Section (Exact About Page Design)
+   Replaces the boring part section with identical typography, hover slides,
+   and spacing system.
+   ========================================================================== */
+.home-services {
+  padding-block: 10vh 8vh !important;
+  border-top: 1px solid var(--about-line, rgba(22, 13, 8, 0.09));
+}
+
+.home-services .about-block {
+  padding-block: 4vh 6vh !important;
+}
+
+/* ==========================================================================
+   Footer "Let's Talk" Generous Gap Spacing
+   Pushes the "Let's talk" section lower down ("little under") so there is
+   ample breathing room between the preceding content and the footer.
+   ========================================================================== */
+.footer {
+  margin-top: 14vh !important;
+  position: relative !important;
+}
+
+.footer-top {
+  padding-top: calc(90px + 3.5rem) !important;
+  padding-bottom: 2.5rem !important;
+}
+
+@media screen and (max-width: 767px) {
+  .home-services {
+    padding-block: 8vh 6vh !important;
+  }
+  .footer {
+    margin-top: 10vh !important;
+  }
+  .footer-top {
+    padding-top: calc(75px + 2rem) !important;
+    padding-bottom: 1.5rem !important;
+  }
+}
+
+
 
 
 
