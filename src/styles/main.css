@@ -1360,13 +1360,6 @@ body[data-page-tone="dark"] .nav-btn-bracket:hover {
   box-shadow: 0 6px 20px rgba(0, 0, 0, 0.18);
 }
 
-/* Home Section Explore All Projects Button */
-.home-all-bracket.btn-bracket {
-  padding: 0.8rem 1.8rem;
-  font-size: 0.86rem;
-  margin-top: 1rem;
-}
-
 /* Contact Page Send Button */
 .contact__send.btn-bracket {
   padding: 0.85rem 1.85rem;

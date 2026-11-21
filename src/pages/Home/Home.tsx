@@ -221,8 +221,9 @@ export const Home: React.FC<HomeProps> = () => {
         </div>
 
         <div className="home-grid home-work__end">
-          <Link className="btn-bracket home-all-bracket" to="/work/">
-            [ EXPLORE ALL PROJECTS → ]
+          <Link className="home-all" to="/work/">
+            <span>Explore all projects &amp; systems</span>
+            <span className="home-all__arrow" aria-hidden="true">→</span>
           </Link>
         </div>
       </section>
