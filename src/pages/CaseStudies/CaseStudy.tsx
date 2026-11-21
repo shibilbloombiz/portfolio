@@ -133,43 +133,71 @@ export const CaseStudy: React.FC = () => {
         </div>
       </section>
 
-      {/* PAIR 1 */}
-      {pair1_1 && pair1_2 && (
+      {/* PAIR OR SECONDARY MEDIA */}
+      {pair1_1 && (
         <div className="home home-grid case-imgs case-imgs--pair">
           <div
-            className="case-fig case-fig--pair"
+            className={`case-fig ${pair1_2 ? 'case-fig--pair' : 'case-fig--wide'}`}
             data-case-fig=""
             data-motion="hero"
             data-frame={pair1_1.frame}
             data-frame-span=""
           >
             <div className="case-fig__img">
-              <img
-                className="work-piece case-fig__art"
-                src={pair1_1.src}
-                alt={pair1_1.alt}
-                loading="lazy"
-                decoding="async"
-              />
+              {pair1_1.type === 'video' ? (
+                <video
+                  className="case-fig__art"
+                  poster={pair1_1.poster}
+                  src={pair1_1.src}
+                  autoPlay
+                  loop
+                  muted
+                  playsInline
+                  aria-label={pair1_1.alt}
+                />
+              ) : (
+                <img
+                  className="work-piece case-fig__art"
+                  src={pair1_1.src}
+                  alt={pair1_1.alt}
+                  loading="lazy"
+                  decoding="async"
+                />
+              )}
             </div>
           </div>
-          <div
-            className="case-fig case-fig--pair"
-            data-case-fig=""
-            data-motion="hero"
-            data-frame={pair1_2.frame}
-            data-frame-span=""
-          >
-            <div className="case-fig__img">
-              <img
-                className="work-piece case-fig__art"
-                src={pair1_2.src}
-                alt={pair1_2.alt}
-                loading="lazy"
-                decoding="async"
-              />
+          {pair1_2 && (
+            <div
+              className="case-fig case-fig--pair"
+              data-case-fig=""
+              data-motion="hero"
+              data-frame={pair1_2.frame}
+              data-frame-span=""
+            >
+              <div className="case-fig__img">
+                {pair1_2.type === 'video' ? (
+                  <video
+                    className="case-fig__art"
+                    poster={pair1_2.poster}
+                    src={pair1_2.src}
+                    autoPlay
+                    loop
+                    muted
+                    playsInline
+                    aria-label={pair1_2.alt}
+                  />
+                ) : (
+                  <img
+                    className="work-piece case-fig__art"
+                    src={pair1_2.src}
+                    alt={pair1_2.alt}
+                    loading="lazy"
+                    decoding="async"
+                  />
+                )}
+              </div>
             </div>
-          </div>
+          )}
         </div>
       )}
 
@@ -280,13 +308,26 @@ export const CaseStudy: React.FC = () => {
               data-frame-span=""
             >
               <div className="case-fig__img">
-                <img
-                  className="work-piece case-fig__art"
-                  src={m.src}
-                  alt={m.alt}
-                  loading="lazy"
-                  decoding="async"
-                />
+                {m.type === 'video' ? (
+                  <video
+                    className="case-fig__art"
+                    poster={m.poster}
+                    src={m.src}
+                    autoPlay
+                    loop
+                    muted
+                    playsInline
+                    aria-label={m.alt}
+                  />
+                ) : (
+                  <img
+                    className="work-piece case-fig__art"
+                    src={m.src}
+                    alt={m.alt}
+                    loading="lazy"
+                    decoding="async"
+                  />
+                )}
               </div>
             </div>
           ))}
