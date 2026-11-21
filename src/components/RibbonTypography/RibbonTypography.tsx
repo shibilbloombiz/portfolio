@@ -5,6 +5,16 @@ interface RibbonTypographyProps {
   embedded?: boolean;
 }
 
+interface TextSegment {
+  text: string;
+  color: string;
+}
+
+interface RibbonItem {
+  segments: TextSegment[];
+  plainText: string;
+}
+
 export const RibbonTypography: React.FC<RibbonTypographyProps> = ({ className = '', embedded = false }) => {
   const containerRef = useRef<HTMLDivElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -19,6 +29,7 @@ export const RibbonTypography: React.FC<RibbonTypographyProps> = ({ className = 
 
     let animId: number;
     let isDestroyed = false;
+    let isVisible = true;
 
     // Respect prefers-reduced-motion
     const prefersReducedMotion =
@@ -26,321 +37,450 @@ export const RibbonTypography: React.FC<RibbonTypographyProps> = ({ className = 
       window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
     // ------------------------------------------------------------------------
-    // 1. Offscreen High-DPI Typography Ribbon Texture Builder
+    // 1. Exact 6 Verified Company Information Items & Typography Hierarchy
     // ------------------------------------------------------------------------
-    const ribbonHeight = 120; // Height of the ribbon strip in logical pixels
-    const textureCanvas = document.createElement('canvas');
-    const textureCtx = textureCanvas.getContext('2d');
-    if (!textureCtx) return;
-
-    // Statements to display on the continuous ribbon
-    const items = [
-      { num: '5+', title: 'YEARS OF EXPERIENCE', tag: 'PROVEN EXPERTISE', highlight: true },
-      { num: '100+', title: 'BRANDS BUILT', tag: 'GLOBAL IMPACT', highlight: false },
-      { num: '200+', title: 'HAPPY CLIENTS', tag: 'TRUSTED PARTNERSHIPS', highlight: true },
-      { num: 'CREATIVE', title: 'THINKING', tag: 'SYSTEMS ARCHITECTURE', highlight: false },
-      { num: 'DIGITAL', title: 'INNOVATION', tag: 'AI & CLOUD AUTOMATION', highlight: true },
-      { num: 'GLOBAL', title: 'INDIA · UAE · KSA', tag: 'WORLDWIDE DELIVERY', highlight: false }
+    const items: RibbonItem[] = [
+      {
+        segments: [
+          { text: '5+', color: '#F15A24' },
+          { text: ' YEARS OF EXPERIENCE', color: '#160D08' },
+        ],
+        plainText: '5+ YEARS OF EXPERIENCE',
+      },
+      {
+        segments: [
+          { text: '100+', color: '#F15A24' },
+          { text: ' BRANDS BUILT', color: '#160D08' },
+        ],
+        plainText: '100+ BRANDS BUILT',
+      },
+      {
+        segments: [
+          { text: '200+', color: '#F15A24' },
+          { text: ' HAPPY CLIENTS', color: '#160D08' },
+        ],
+        plainText: '200+ HAPPY CLIENTS',
+      },
+      {
+        segments: [
+          { text: 'CREATIVE', color: '#F15A24' },
+          { text: ' THINKING', color: '#160D08' },
+        ],
+        plainText: 'CREATIVE THINKING',
+      },
+      {
+        segments: [
+          { text: 'DIGITAL ', color: '#160D08' },
+          { text: 'INNOVATION', color: '#F15A24' },
+        ],
+        plainText: 'DIGITAL INNOVATION',
+      },
+      {
+        segments: [
+          { text: 'INDIA', color: '#160D08' },
+          { text: ' · ', color: '#F15A24' },
+          { text: 'UAE', color: '#160D08' },
+          { text: ' · ', color: '#F15A24' },
+          { text: 'KSA', color: '#160D08' },
+        ],
+        plainText: 'INDIA · UAE · KSA',
+      },
     ];
 
-    // Build repeating ribbon layout on the texture canvas
-    const buildTexture = () => {
-      // Calculate item dimensions
-      const itemWidth = 520;
-      const totalWidth = itemWidth * items.length;
-
-      textureCanvas.width = totalWidth;
-      textureCanvas.height = ribbonHeight;
-
-      // Ribbon background: warm white/paper ivory with subtle surface texture
-      const bgGrad = textureCtx.createLinearGradient(0, 0, 0, ribbonHeight);
-      bgGrad.addColorStop(0, '#FFFFFF');
-      bgGrad.addColorStop(0.5, '#FAF9F6');
-      bgGrad.addColorStop(1, '#F3F1EC');
-
-      textureCtx.fillStyle = bgGrad;
-      textureCtx.fillRect(0, 0, totalWidth, ribbonHeight);
-
-      // Top and bottom decorative borders (paper edge + accent pinstripe)
-      textureCtx.strokeStyle = 'rgba(22, 13, 8, 0.12)';
-      textureCtx.lineWidth = 1;
-      textureCtx.beginPath();
-      textureCtx.moveTo(0, 1);
-      textureCtx.lineTo(totalWidth, 1);
-      textureCtx.moveTo(0, ribbonHeight - 1);
-      textureCtx.lineTo(totalWidth, ribbonHeight - 1);
-      textureCtx.stroke();
-
-      // Top subtle orange accent pinstripe
-      textureCtx.strokeStyle = '#F15A24';
-      textureCtx.lineWidth = 2.5;
-      textureCtx.beginPath();
-      textureCtx.moveTo(0, 3);
-      textureCtx.lineTo(totalWidth, 3);
-      textureCtx.stroke();
-
-      // Bottom subtle graphite pinstripe
-      textureCtx.strokeStyle = 'rgba(22, 13, 8, 0.08)';
-      textureCtx.lineWidth = 1.5;
-      textureCtx.beginPath();
-      textureCtx.moveTo(0, ribbonHeight - 3);
-      textureCtx.lineTo(totalWidth, ribbonHeight - 3);
-      textureCtx.stroke();
-
-      // Draw each typographic block
-      items.forEach((item, idx) => {
-        const startX = idx * itemWidth;
-
-        // Subtle vertical segment separator
-        textureCtx.strokeStyle = 'rgba(22, 13, 8, 0.07)';
-        textureCtx.lineWidth = 1;
-        textureCtx.beginPath();
-        textureCtx.moveTo(startX, 10);
-        textureCtx.lineTo(startX, ribbonHeight - 10);
-        textureCtx.stroke();
-
-        // 1. Tag / Badge
-        textureCtx.font = '500 11px "Office Code Pro", monospace, sans-serif';
-        textureCtx.fillStyle = item.highlight ? '#F15A24' : 'rgba(22, 13, 8, 0.55)';
-        textureCtx.letterSpacing = '0.12em';
-        textureCtx.fillText(`[ ${item.tag} ]`, startX + 36, 32);
-
-        // 2. Large Number or Lead Heading
-        textureCtx.font = '800 44px "SaansVF", -apple-system, BlinkMacSystemFont, sans-serif';
-        textureCtx.fillStyle = item.highlight ? '#F15A24' : '#160D08';
-        textureCtx.letterSpacing = '-0.02em';
-        textureCtx.fillText(item.num, startX + 36, 76);
-
-        // 3. Supporting Title / Statement
-        const numMetrics = textureCtx.measureText(item.num);
-        const titleX = startX + 36 + numMetrics.width + 16;
-        textureCtx.font = '700 21px "SaansVF", -apple-system, BlinkMacSystemFont, sans-serif';
-        textureCtx.fillStyle = '#160D08';
-        textureCtx.letterSpacing = '0.04em';
-        textureCtx.fillText(item.title, titleX, 72);
-
-        // 4. Diamond / Star divider
-        textureCtx.fillStyle = '#F15A24';
-        const divX = startX + itemWidth - 28;
-        const divY = ribbonHeight / 2;
-        textureCtx.beginPath();
-        textureCtx.arc(divX, divY, 3.5, 0, Math.PI * 2);
-        textureCtx.fill();
-      });
-
-      return totalWidth;
-    };
-
-    const textureWidth = buildTexture();
-
     // ------------------------------------------------------------------------
-    // 2. Continuous Flowing 3D Ribbon Deformation Engine
+    // 2. Responsive Sizing & Canvas Dimensions
     // ------------------------------------------------------------------------
     let width = 0;
     let height = 0;
     let dpr = 1;
 
+    let ribbonThickness = 72; // Consistent perpendicular thickness
+    let fontSize = 17;
+    let itemGap = 110;
+    let waveAmp1 = 40;
+    let waveAmp2 = 16;
+    let waveAmp3 = 8;
+
     const resize = () => {
       const rect = container.getBoundingClientRect();
       dpr = Math.min(window.devicePixelRatio || 1, 2);
       width = Math.floor(rect.width);
-      height = Math.floor(rect.height || 460);
+      height = Math.floor(rect.height || (embedded ? 380 : 440));
 
-      canvas.width = width * dpr;
-      canvas.height = height * dpr;
+      canvas.width = Math.round(width * dpr);
+      canvas.height = Math.round(height * dpr);
       canvas.style.width = `${width}px`;
       canvas.style.height = `${height}px`;
+
+      // Responsive parameter adjustments
+      if (width < 768) {
+        // Mobile
+        ribbonThickness = 48;
+        fontSize = 13.5;
+        itemGap = 65;
+        waveAmp1 = 20;
+        waveAmp2 = 8;
+        waveAmp3 = 4;
+      } else if (width < 992) {
+        // Tablet
+        ribbonThickness = 60;
+        fontSize = 15;
+        itemGap = 85;
+        waveAmp1 = 30;
+        waveAmp2 = 12;
+        waveAmp3 = 6;
+      } else {
+        // Desktop
+        ribbonThickness = 72;
+        fontSize = 17;
+        itemGap = 110;
+        waveAmp1 = 40;
+        waveAmp2 = 16;
+        waveAmp3 = 8;
+      }
     };
 
     resize();
     const ro = new ResizeObserver(resize);
     ro.observe(container);
 
-    // Motion variables
-    let scrollOffset = 0;
-    let baseSpeed = 58; // pixels per second
-    let currentSpeed = baseSpeed;
+    // Visibility observer to pause animation loop when scrolled out of view
+    const io = new IntersectionObserver(
+      (entries) => {
+        if (entries[0]) {
+          isVisible = entries[0].isIntersecting;
+        }
+      },
+      { threshold: 0.05 }
+    );
+    io.observe(container);
+
+    // ------------------------------------------------------------------------
+    // 3. Motion & Physics Controller (Idle + Drag + Momentum + Scroll)
+    // ------------------------------------------------------------------------
+    const baseIdleSpeed = prefersReducedMotion ? 0 : 46; // px per second
+    let currentVelocity = baseIdleSpeed;
+    let progress = 0;
     let lastTime = performance.now();
 
-    // Scroll velocity integration
-    let lastScrollY = window.scrollY;
-    let scrollVelocity = 0;
-
-    const onScroll = () => {
-      const currentScrollY = window.scrollY;
-      const deltaY = currentScrollY - lastScrollY;
-      lastScrollY = currentScrollY;
-      scrollVelocity = deltaY * 1.8;
-    };
-    window.addEventListener('scroll', onScroll, { passive: true });
-
-    // Drag interaction
+    // Drag interaction state
     let isDragging = false;
-    let dragStartX = 0;
-    let dragStartScroll = 0;
+    let lastPointerX = 0;
+    let lastPointerTime = performance.now();
+    let dragVelocity = 0;
 
     const onPointerDown = (e: PointerEvent) => {
       isDragging = true;
-      dragStartX = e.clientX;
-      dragStartScroll = scrollOffset;
+      lastPointerX = e.clientX;
+      lastPointerTime = performance.now();
+      dragVelocity = 0;
+      canvas.setPointerCapture(e.pointerId);
+      container.style.cursor = 'grabbing';
     };
 
     const onPointerMove = (e: PointerEvent) => {
       if (!isDragging) return;
-      const dx = e.clientX - dragStartX;
-      scrollOffset = dragStartScroll - dx * 1.5;
+      const now = performance.now();
+      const dx = e.clientX - lastPointerX;
+      lastPointerX = e.clientX;
+
+      // Direct responsive dragging along trajectory
+      progress -= dx;
+
+      const dtPointer = Math.max((now - lastPointerTime) / 1000, 0.008);
+      lastPointerTime = now;
+      const instantVel = -dx / dtPointer;
+      dragVelocity = dragVelocity * 0.55 + instantVel * 0.45;
     };
 
-    const onPointerUp = () => {
+    const onPointerUp = (e: PointerEvent) => {
+      if (!isDragging) return;
       isDragging = false;
+      try {
+        canvas.releasePointerCapture(e.pointerId);
+      } catch {
+        // Ignore if pointer capture already lost
+      }
+      container.style.cursor = 'grab';
+
+      // Hand off drag velocity with momentum
+      if (!prefersReducedMotion && Math.abs(dragVelocity) > 20) {
+        currentVelocity = Math.max(Math.min(dragVelocity, 1200), -1200);
+      }
     };
 
     canvas.addEventListener('pointerdown', onPointerDown);
     window.addEventListener('pointermove', onPointerMove);
     window.addEventListener('pointerup', onPointerUp);
+    window.addEventListener('pointercancel', onPointerUp);
+
+    // Scroll interaction: Page scroll accelerates ribbon flow subtly
+    let lastScrollY = window.scrollY;
+    let scrollImpulse = 0;
+
+    const onScroll = () => {
+      const currentScrollY = window.scrollY;
+      const deltaY = currentScrollY - lastScrollY;
+      lastScrollY = currentScrollY;
+      if (!prefersReducedMotion) {
+        scrollImpulse += deltaY * 1.4;
+      }
+    };
+    window.addEventListener('scroll', onScroll, { passive: true });
 
     // ------------------------------------------------------------------------
-    // 3. Render Loop: Ribbon Wave & Slice Texture Mapping
+    // 4. Smooth Parametric Wave Curve Engine
+    // ------------------------------------------------------------------------
+    // Generates a graceful, organic, continuously traveling wave with
+    // continuous derivatives and strictly constant normal thickness.
+    const getCurve = (x: number, timeSec: number) => {
+      const centerY = height * 0.5;
+
+      // Natural harmonic wavelengths
+      const k1 = 0.0032; // Primary S-curve (~1960px cycle)
+      const k2 = 0.0068; // Secondary smooth harmonic (~920px cycle)
+      const k3 = 0.0015; // Slow undulating breathing cycle (~4180px cycle)
+
+      const w1 = prefersReducedMotion ? 0 : timeSec * 1.15;
+      const w2 = prefersReducedMotion ? 0 : timeSec * 0.85;
+      const w3 = prefersReducedMotion ? 0 : timeSec * 0.45;
+
+      const y =
+        centerY +
+        Math.sin(x * k1 - w1) * waveAmp1 +
+        Math.cos(x * k2 + w2) * waveAmp2 +
+        Math.sin(x * k3 - w3) * waveAmp3;
+
+      // Analytical derivative dy/dx
+      const dy =
+        Math.cos(x * k1 - w1) * (waveAmp1 * k1) -
+        Math.sin(x * k2 + w2) * (waveAmp2 * k2) +
+        Math.cos(x * k3 - w3) * (waveAmp3 * k3);
+
+      const angle = Math.atan(dy);
+      const len = Math.sqrt(1 + dy * dy);
+      // Unit normal: perpendicular to curve
+      const nx = -dy / len;
+      const ny = 1 / len;
+
+      return { y, dy, angle, nx, ny };
+    };
+
+    // ------------------------------------------------------------------------
+    // 5. Main 60fps Render Loop
     // ------------------------------------------------------------------------
     const render = (time: number) => {
       if (isDestroyed) return;
 
-      const dt = Math.min((time - lastTime) / 1000, 0.1);
+      const dt = Math.min((time - lastTime) / 1000, 0.05);
       lastTime = time;
 
-      // Update flow speed with spring damping back to base speed
-      if (!isDragging && !prefersReducedMotion) {
-        currentSpeed += (baseSpeed - currentSpeed) * 0.08;
-        currentSpeed += scrollVelocity * 0.35;
-        scrollVelocity *= 0.88; // Damping
-        scrollOffset += currentSpeed * dt;
-      }
+      if (isVisible) {
+        // Physics update
+        if (!isDragging && !prefersReducedMotion) {
+          // Scroll impulse integration and smooth exponential damping
+          currentVelocity += scrollImpulse * 0.28;
+          scrollImpulse *= 0.84;
 
-      if (scrollOffset >= textureWidth) {
-        scrollOffset %= textureWidth;
-      } else if (scrollOffset < 0) {
-        scrollOffset = (scrollOffset % textureWidth) + textureWidth;
-      }
+          // Natural momentum friction decay settling back to idle base speed
+          currentVelocity += (baseIdleSpeed - currentVelocity) * Math.min(1, dt * 2.2);
 
-      ctx.save();
-      ctx.scale(dpr, dpr);
-      ctx.clearRect(0, 0, width, height);
-
-      // Subtle warm ivory ambient paper background gradient (when standalone)
-      if (!embedded) {
-        const bg = ctx.createLinearGradient(0, 0, 0, height);
-        bg.addColorStop(0, 'rgba(243, 242, 238, 0)');
-        bg.addColorStop(0.5, 'rgba(243, 242, 238, 0.85)');
-        bg.addColorStop(1, 'rgba(243, 242, 238, 0)');
-        ctx.fillStyle = bg;
-        ctx.fillRect(0, 0, width, height);
-      }
-
-      const tSec = time * 0.001;
-      const centerY = height * 0.52;
-
-      // Organic Wave Parametric Function:
-      // Computes ribbon center (x, y), slope angle, and 3D depth scale z
-      const getWave = (x: number) => {
-        // Multi-frequency sine & cosine wave for organic S-curves
-        const wave1 = Math.sin(x * 0.0028 - tSec * 1.25) * 58;
-        const wave2 = Math.cos(x * 0.0055 + tSec * 0.85) * 26;
-        const wave3 = Math.sin(x * 0.0012 + tSec * 0.5) * 16;
-        const y = centerY + wave1 + wave2 + wave3;
-
-        // Derivative dy/dx for local surface normal & tangent
-        const dy =
-          Math.cos(x * 0.0028 - tSec * 1.25) * 58 * 0.0028 -
-          Math.sin(x * 0.0055 + tSec * 0.85) * 26 * 0.0055 +
-          Math.cos(x * 0.0012 + tSec * 0.5) * 16 * 0.0012;
-
-        const angle = Math.atan(dy);
-
-        // Subtle 3D perspective depth variation:
-        // When ribbon undulates, parts come closer (larger, brighter) or recede
-        const depth = Math.sin(x * 0.0032 - tSec * 0.95);
-        const scaleZ = 1 + depth * 0.12; // +/- 12% width scale
-
-        return { y, angle, scaleZ, depth };
-      };
-
-      // ----------------------------------------------------------------------
-      // Step A: Draw Ribbon Ambient Soft Drop Shadow
-      // ----------------------------------------------------------------------
-      ctx.save();
-      ctx.beginPath();
-      const sliceStep = 4; // 4px sampling for smooth shadow
-      const shadowOffsetY = 38;
-
-      // Top edge of shadow
-      for (let x = -40; x <= width + 40; x += sliceStep) {
-        const { y, angle, scaleZ } = getWave(x);
-        const halfH = (ribbonHeight * scaleZ) / 2;
-        const sy = y + Math.cos(angle) * halfH + shadowOffsetY;
-        if (x === -40) ctx.moveTo(x, sy);
-        else ctx.lineTo(x, sy);
-      }
-
-      // Bottom edge of shadow
-      for (let x = width + 40; x >= -40; x -= sliceStep) {
-        const { y, angle, scaleZ } = getWave(x);
-        const halfH = (ribbonHeight * scaleZ) / 2;
-        const sy = y + Math.cos(angle) * halfH + shadowOffsetY + 22;
-        ctx.lineTo(x, sy);
-      }
-      ctx.closePath();
-
-      ctx.fillStyle = 'rgba(22, 13, 8, 0.055)';
-      ctx.filter = 'blur(14px)';
-      ctx.fill();
-      ctx.restore();
-
-      // ----------------------------------------------------------------------
-      // Step B: Render Ribbon Surface & Typography Slices
-      // We slice the pre-rendered texture in 2.5px strips and map each strip
-      // along the normal and tangent of the waving ribbon curve!
-      // ----------------------------------------------------------------------
-      const sliceW = 3; // 3px vertical slice width
-      const totalSlices = Math.ceil((width + 80) / sliceW);
-
-      for (let i = 0; i < totalSlices; i++) {
-        const screenX = -40 + i * sliceW;
-        const { y, angle, scaleZ, depth } = getWave(screenX);
-
-        // Map screenX + scrollOffset to texture coordinate
-        const texU = ((screenX + scrollOffset) % textureWidth + textureWidth) % textureWidth;
-
-        // Current ribbon height with perspective depth
-        const currentH = ribbonHeight * scaleZ;
+          // Advance flow progress
+          progress += currentVelocity * dt;
+        }
 
         ctx.save();
-        ctx.translate(screenX, y);
-        ctx.rotate(angle);
+        ctx.scale(dpr, dpr);
+        ctx.clearRect(0, 0, width, height);
 
-        // Draw the vertical strip from the typography texture
-        ctx.drawImage(
-          textureCanvas,
-          texU, 0, sliceW, ribbonHeight, // source slice
-          -sliceW / 2, -currentH / 2, sliceW, currentH // destination slice on ribbon
-        );
+        const timeSec = time * 0.001;
+        const halfThick = ribbonThickness * 0.5;
 
-        // Realistic Paper Lighting & Dimensional Shading:
-        // Angle of ribbon surface relative to light source creates highlights and shadows
-        const lightFactor = Math.sin(angle) * 0.16 + depth * 0.08;
-        if (lightFactor > 0) {
-          // Highlight on wave crest
-          ctx.fillStyle = `rgba(255, 255, 255, ${Math.min(0.24, lightFactor * 1.2).toFixed(3)})`;
-          ctx.fillRect(-sliceW / 2, -currentH / 2, sliceW, currentH);
-        } else {
-          // Soft shade on wave trough
-          ctx.fillStyle = `rgba(22, 13, 8, ${Math.min(0.18, -lightFactor * 1.1).toFixed(3)})`;
-          ctx.fillRect(-sliceW / 2, -currentH / 2, sliceW, currentH);
+        // Set font for layout measurements
+        const fontStr = `700 ${fontSize}px "SaansVF", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif`;
+        ctx.font = fontStr;
+        ctx.textBaseline = 'middle';
+        ctx.textAlign = 'center';
+
+        // Pre-calculate loop metrics
+        const letterSpacing = fontSize * 0.07;
+        const itemWidths = items.map((item) => {
+          let itemW = 0;
+          for (const seg of item.segments) {
+            for (let i = 0; i < seg.text.length; i++) {
+              itemW += ctx.measureText(seg.text[i]).width + letterSpacing;
+            }
+          }
+          return itemW;
+        });
+
+        const totalItemsWidth = itemWidths.reduce((a, b) => a + b, 0);
+        const totalLoopWidth = totalItemsWidth + items.length * itemGap;
+
+        // Wrap progress cleanly within one loop period
+        const loopOffset = ((progress % totalLoopWidth) + totalLoopWidth) % totalLoopWidth;
+
+        // --------------------------------------------------------------------
+        // A. Soft Realistic Drop Shadow Beneath Ribbon
+        // --------------------------------------------------------------------
+        const shadowOffsetY = width < 768 ? 16 : 26;
+        ctx.save();
+        ctx.beginPath();
+
+        // Top edge of shadow
+        const xStart = -80;
+        const xEnd = width + 80;
+        const sampleStep = 4;
+
+        for (let x = xStart; x <= xEnd; x += sampleStep) {
+          const { y, nx, ny } = getCurve(x, timeSec);
+          const px = x + nx * halfThick;
+          const py = y + ny * halfThick + shadowOffsetY;
+          if (x === xStart) ctx.moveTo(px, py);
+          else ctx.lineTo(px, py);
+        }
+
+        // Bottom edge of shadow
+        for (let x = xEnd; x >= xStart; x -= sampleStep) {
+          const { y, nx, ny } = getCurve(x, timeSec);
+          const px = x - nx * halfThick;
+          const py = y - ny * halfThick + shadowOffsetY + (width < 768 ? 14 : 22);
+          ctx.lineTo(px, py);
+        }
+
+        ctx.closePath();
+        ctx.fillStyle = 'rgba(22, 13, 8, 0.04)';
+        ctx.filter = 'blur(16px)';
+        ctx.fill();
+        ctx.restore();
+
+        // --------------------------------------------------------------------
+        // B. Continuous Unbroken Ribbon Surface (One Unified Vector Path)
+        // --------------------------------------------------------------------
+        ctx.save();
+        ctx.beginPath();
+
+        // Top boundary curve (from left to right)
+        for (let x = xStart; x <= xEnd; x += 2) {
+          const { y, nx, ny } = getCurve(x, timeSec);
+          const px = x - nx * halfThick;
+          const py = y - ny * halfThick;
+          if (x === xStart) ctx.moveTo(px, py);
+          else ctx.lineTo(px, py);
+        }
+
+        // Bottom boundary curve (from right to left)
+        for (let x = xEnd; x >= xStart; x -= 2) {
+          const { y, nx, ny } = getCurve(x, timeSec);
+          const px = x + nx * halfThick;
+          const py = y + ny * halfThick;
+          ctx.lineTo(px, py);
+        }
+
+        ctx.closePath();
+
+        // Premium warm ivory paper surface
+        const ribbonBg = ctx.createLinearGradient(0, height * 0.25, 0, height * 0.75);
+        ribbonBg.addColorStop(0, '#FFFFFF');
+        ribbonBg.addColorStop(0.35, '#FAF9F6');
+        ribbonBg.addColorStop(0.7, '#F6F4EE');
+        ribbonBg.addColorStop(1, '#ECE9E0');
+        ctx.fillStyle = ribbonBg;
+        ctx.fill();
+
+        // Delicate paper edge boundary (stroke)
+        ctx.strokeStyle = 'rgba(22, 13, 8, 0.08)';
+        ctx.lineWidth = 1;
+        ctx.stroke();
+        ctx.restore();
+
+        // --------------------------------------------------------------------
+        // C. Subtle Ambient Lighting & Wave Highlight
+        // --------------------------------------------------------------------
+        // Clips to the ribbon surface to add gentle paper depth on crests/valleys
+        ctx.save();
+        ctx.beginPath();
+        for (let x = xStart; x <= xEnd; x += 2) {
+          const { y, nx, ny } = getCurve(x, timeSec);
+          const px = x - nx * halfThick;
+          const py = y - ny * halfThick;
+          if (x === xStart) ctx.moveTo(px, py);
+          else ctx.lineTo(px, py);
+        }
+        for (let x = xEnd; x >= xStart; x -= 2) {
+          const { y, nx, ny } = getCurve(x, timeSec);
+          const px = x + nx * halfThick;
+          const py = y + ny * halfThick;
+          ctx.lineTo(px, py);
+        }
+        ctx.closePath();
+        ctx.clip();
+
+        // Wave crest highlight and wave trough shading
+        const lightPassStep = 6;
+        for (let x = xStart; x <= xEnd; x += lightPassStep) {
+          const { y, angle } = getCurve(x, timeSec);
+          const lightFactor = Math.sin(angle * 2.2);
+
+          if (lightFactor > 0.15) {
+            ctx.fillStyle = `rgba(255, 255, 255, ${(lightFactor * 0.18).toFixed(3)})`;
+            ctx.fillRect(x - lightPassStep * 0.5, y - halfThick - 4, lightPassStep + 1, ribbonThickness + 8);
+          } else if (lightFactor < -0.15) {
+            ctx.fillStyle = `rgba(22, 13, 8, ${(-lightFactor * 0.045).toFixed(3)})`;
+            ctx.fillRect(x - lightPassStep * 0.5, y - halfThick - 4, lightPassStep + 1, ribbonThickness + 8);
+          }
+        }
+        ctx.restore();
+
+        // --------------------------------------------------------------------
+        // D. Accurate Text-On-Path Typography Alignment
+        // --------------------------------------------------------------------
+        // Render enough loop repetitions to cover the full width plus margins
+        const minX = -100;
+        const maxX = width + 100;
+
+        // Find starting loop index
+        let cursorX = -loopOffset;
+        while (cursorX > minX) {
+          cursorX -= totalLoopWidth;
+        }
+
+        // Loop until beyond right boundary
+        while (cursorX < maxX) {
+          for (let itemIdx = 0; itemIdx < items.length; itemIdx++) {
+            const item = items[itemIdx];
+
+            for (const seg of item.segments) {
+              for (let cIdx = 0; cIdx < seg.text.length; cIdx++) {
+                const char = seg.text[cIdx];
+                const charWidth = ctx.measureText(char).width;
+                const charCenterX = cursorX + charWidth * 0.5;
+
+                // Only render glyphs within visible horizontal bounds
+                if (charCenterX >= minX - 20 && charCenterX <= maxX + 20) {
+                  const { y, angle } = getCurve(charCenterX, timeSec);
+
+                  ctx.save();
+                  // Center directly on the ribbon spine curve
+                  ctx.translate(charCenterX, y);
+                  // Tangent rotation perfectly conforms to curvature
+                  ctx.rotate(angle);
+                  ctx.fillStyle = seg.color;
+                  ctx.fillText(char, 0, 0);
+                  ctx.restore();
+                }
+
+                cursorX += charWidth + letterSpacing;
+              }
+            }
+
+            // Spacing between information groups
+            cursorX += itemGap;
+          }
         }
 
         ctx.restore();
       }
-
-      ctx.restore();
 
       animId = requestAnimationFrame(render);
     };
@@ -351,16 +491,23 @@ export const RibbonTypography: React.FC<RibbonTypographyProps> = ({ className = 
       isDestroyed = true;
       cancelAnimationFrame(animId);
       ro.disconnect();
+      io.disconnect();
       window.removeEventListener('scroll', onScroll);
       canvas.removeEventListener('pointerdown', onPointerDown);
       window.removeEventListener('pointermove', onPointerMove);
       window.removeEventListener('pointerup', onPointerUp);
+      window.removeEventListener('pointercancel', onPointerUp);
     };
-  }, []);
+  }, [embedded]);
 
   if (embedded) {
     return (
-      <div className={`ribbon-canvas-wrap ribbon-canvas-wrap--embedded ${className}`} ref={containerRef}>
+      <div
+        className={`ribbon-canvas-wrap ribbon-canvas-wrap--embedded ${className}`}
+        ref={containerRef}
+        role="region"
+        aria-label="Interactive flowing company achievements ribbon"
+      >
         <canvas className="ribbon-canvas" ref={canvasRef} aria-hidden="true" />
         {/* Screen-reader accessible alternative text */}
         <div className="u-sr">
@@ -383,7 +530,12 @@ export const RibbonTypography: React.FC<RibbonTypographyProps> = ({ className = 
         </div>
       </div>
 
-      <div className="ribbon-canvas-wrap" ref={containerRef}>
+      <div
+        className="ribbon-canvas-wrap"
+        ref={containerRef}
+        role="region"
+        aria-label="Interactive flowing company achievements ribbon"
+      >
         <canvas className="ribbon-canvas" ref={canvasRef} aria-hidden="true" />
         {/* Screen-reader accessible alternative text */}
         <div className="u-sr">
