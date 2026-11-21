@@ -1,11 +1,45 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useParams, Link, Navigate } from 'react-router-dom';
-import { projects } from '../../data/projects';
+import { projects, Project } from '../../data/projects';
 import { Footer } from '../../components/Footer/Footer';
 
 export const CaseStudy: React.FC = () => {
   const { slug } = useParams<{ slug: string }>();
-  const project = projects.find((p) => p.slug === slug);
+  const staticProject = projects.find((p) => p.slug === slug);
+  const [project, setProject] = useState<Project | undefined>(staticProject);
+
+  useEffect(() => {
+    setProject(projects.find((p) => p.slug === slug));
+    if (!slug) return;
+    fetch(`/api/projects/${slug}`)
+      .then((r) => (r.ok ? r.json() : null))
+      .then((data) => {
+        if (data && data.title && Array.isArray(data.media)) {
+          setProject((prev) => {
+            if (!prev) return prev;
+            return {
+              ...prev,
+              title: data.title || prev.title,
+              description: data.description || prev.description,
+              sector: data.sector || prev.sector,
+              scope: data.scope || prev.scope,
+              year: data.year ? data.year.toString() : prev.year,
+              tone: data.tone || prev.tone,
+              problem: data.problem || prev.problem,
+              decision: data.decision || prev.decision,
+              principles: Array.isArray(data.principles) && data.principles.length ? data.principles : prev.principles,
+              result: data.result || prev.result,
+              externalUrl: data.external_url || prev.externalUrl,
+              nextSlug: data.next_slug || prev.nextSlug,
+              nextTitle: data.next_title || prev.nextTitle,
+              nextTone: data.next_tone || prev.nextTone,
+              media: data.media && data.media.length ? data.media : prev.media,
+            };
+          });
+        }
+      })
+      .catch(() => {});
+  }, [slug]);
 
   if (!project) {
     return <Navigate to="/work/" replace />;

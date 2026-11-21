@@ -54,6 +54,34 @@ export const projects: Project[] = [
         alt: 'EduCarrt: Study Abroad Consultant for a Brighter Future on desktop display',
         frame: 'Web / 1440 / 12 cols',
         layout: 'lead'
+      },
+      {
+        type: 'image',
+        src: '/images/work/projects/novara-1.png',
+        alt: 'EduCarrt Student Portal & Mobile Course Discovery Interface',
+        frame: 'Mobile / 390 / 6 cols',
+        layout: 'pair'
+      },
+      {
+        type: 'image',
+        src: '/images/work/projects/sabka-1.png',
+        alt: 'EduCarrt University Application Tracker & Degree Matching Engine',
+        frame: 'Web / 1440 / 6 cols',
+        layout: 'pair'
+      },
+      {
+        type: 'image',
+        src: '/images/work/projects/future-1.png',
+        alt: 'EduCarrt Global Institutional Partner Network & Enterprise Dashboard',
+        frame: 'Web / 1920 / Full-Bleed',
+        layout: 'wide'
+      },
+      {
+        type: 'image',
+        src: '/images/work/projects/ftx-1.png',
+        alt: 'EduCarrt Visa Workflow Automation & Document Verification System',
+        frame: 'Web / 1440 / 12 cols',
+        layout: 'wide'
       }
     ]
   },
