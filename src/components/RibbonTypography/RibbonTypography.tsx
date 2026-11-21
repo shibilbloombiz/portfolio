@@ -229,33 +229,35 @@ export const RibbonTypography: React.FC<RibbonTypographyProps> = ({ className = 
     window.addEventListener('scroll', onScroll, { passive: true });
 
     // ------------------------------------------------------------------------
-    // 4. Smooth Parametric Wave Curve Engine
+    // 4. Smooth Stationary Ribbon Spline Curve
     // ------------------------------------------------------------------------
-    // Generates a graceful, organic, continuously traveling wave with
-    // continuous derivatives and strictly constant normal thickness.
-    const getCurve = (x: number, timeSec: number) => {
+    // The ribbon strip itself remains stationary and stable across the section.
+    // Only the typography glides and moves along this curved ribbon surface.
+    const getCurve = (x: number) => {
       const centerY = height * 0.5;
 
-      // Natural harmonic wavelengths
-      const k1 = 0.0032; // Primary S-curve (~1960px cycle)
-      const k2 = 0.0068; // Secondary smooth harmonic (~920px cycle)
-      const k3 = 0.0015; // Slow undulating breathing cycle (~4180px cycle)
+      // Natural harmonic wavelengths scaled to width for balanced composition
+      const baseSpan = Math.max(width, 1000);
+      const k1 = (Math.PI * 2) / (baseSpan * 0.95);
+      const k2 = k1 * 2.2;
+      const k3 = k1 * 0.5;
 
-      const w1 = prefersReducedMotion ? 0 : timeSec * 1.15;
-      const w2 = prefersReducedMotion ? 0 : timeSec * 0.85;
-      const w3 = prefersReducedMotion ? 0 : timeSec * 0.45;
+      // Fixed phase offsets (no time variation -> ribbon is stationary)
+      const p1 = 0.6;
+      const p2 = 2.1;
+      const p3 = -0.3;
 
       const y =
         centerY +
-        Math.sin(x * k1 - w1) * waveAmp1 +
-        Math.cos(x * k2 + w2) * waveAmp2 +
-        Math.sin(x * k3 - w3) * waveAmp3;
+        Math.sin(x * k1 + p1) * waveAmp1 +
+        Math.cos(x * k2 + p2) * waveAmp2 +
+        Math.sin(x * k3 + p3) * waveAmp3;
 
       // Analytical derivative dy/dx
       const dy =
-        Math.cos(x * k1 - w1) * (waveAmp1 * k1) -
-        Math.sin(x * k2 + w2) * (waveAmp2 * k2) +
-        Math.cos(x * k3 - w3) * (waveAmp3 * k3);
+        Math.cos(x * k1 + p1) * (waveAmp1 * k1) -
+        Math.sin(x * k2 + p2) * (waveAmp2 * k2) +
+        Math.cos(x * k3 + p3) * (waveAmp3 * k3);
 
       const angle = Math.atan(dy);
       const len = Math.sqrt(1 + dy * dy);
@@ -276,7 +278,7 @@ export const RibbonTypography: React.FC<RibbonTypographyProps> = ({ className = 
       lastTime = time;
 
       if (isVisible) {
-        // Physics update
+        // Physics update: text motion along the stationary ribbon
         if (!isDragging && !prefersReducedMotion) {
           // Scroll impulse integration and smooth exponential damping
           currentVelocity += scrollImpulse * 0.28;
@@ -285,7 +287,7 @@ export const RibbonTypography: React.FC<RibbonTypographyProps> = ({ className = 
           // Natural momentum friction decay settling back to idle base speed
           currentVelocity += (baseIdleSpeed - currentVelocity) * Math.min(1, dt * 2.2);
 
-          // Advance flow progress
+          // Advance text flow progress along the stationary ribbon
           progress += currentVelocity * dt;
         }
 
@@ -293,7 +295,6 @@ export const RibbonTypography: React.FC<RibbonTypographyProps> = ({ className = 
         ctx.scale(dpr, dpr);
         ctx.clearRect(0, 0, width, height);
 
-        const timeSec = time * 0.001;
         const halfThick = ribbonThickness * 0.5;
 
         // Set font for layout measurements
@@ -333,7 +334,7 @@ export const RibbonTypography: React.FC<RibbonTypographyProps> = ({ className = 
         const sampleStep = 4;
 
         for (let x = xStart; x <= xEnd; x += sampleStep) {
-          const { y, nx, ny } = getCurve(x, timeSec);
+          const { y, nx, ny } = getCurve(x);
           const px = x + nx * halfThick;
           const py = y + ny * halfThick + shadowOffsetY;
           if (x === xStart) ctx.moveTo(px, py);
@@ -342,7 +343,7 @@ export const RibbonTypography: React.FC<RibbonTypographyProps> = ({ className = 
 
         // Bottom edge of shadow
         for (let x = xEnd; x >= xStart; x -= sampleStep) {
-          const { y, nx, ny } = getCurve(x, timeSec);
+          const { y, nx, ny } = getCurve(x);
           const px = x - nx * halfThick;
           const py = y - ny * halfThick + shadowOffsetY + (width < 768 ? 14 : 22);
           ctx.lineTo(px, py);
@@ -355,14 +356,14 @@ export const RibbonTypography: React.FC<RibbonTypographyProps> = ({ className = 
         ctx.restore();
 
         // --------------------------------------------------------------------
-        // B. Continuous Unbroken Ribbon Surface (One Unified Vector Path)
+        // B. Continuous Unbroken Ribbon Surface (Stationary Vector Path)
         // --------------------------------------------------------------------
         ctx.save();
         ctx.beginPath();
 
         // Top boundary curve (from left to right)
         for (let x = xStart; x <= xEnd; x += 2) {
-          const { y, nx, ny } = getCurve(x, timeSec);
+          const { y, nx, ny } = getCurve(x);
           const px = x - nx * halfThick;
           const py = y - ny * halfThick;
           if (x === xStart) ctx.moveTo(px, py);
@@ -371,7 +372,7 @@ export const RibbonTypography: React.FC<RibbonTypographyProps> = ({ className = 
 
         // Bottom boundary curve (from right to left)
         for (let x = xEnd; x >= xStart; x -= 2) {
-          const { y, nx, ny } = getCurve(x, timeSec);
+          const { y, nx, ny } = getCurve(x);
           const px = x + nx * halfThick;
           const py = y + ny * halfThick;
           ctx.lineTo(px, py);
@@ -395,20 +396,20 @@ export const RibbonTypography: React.FC<RibbonTypographyProps> = ({ className = 
         ctx.restore();
 
         // --------------------------------------------------------------------
-        // C. Subtle Ambient Lighting & Wave Highlight
+        // C. Subtle Ambient Lighting & Paper Depth
         // --------------------------------------------------------------------
         // Clips to the ribbon surface to add gentle paper depth on crests/valleys
         ctx.save();
         ctx.beginPath();
         for (let x = xStart; x <= xEnd; x += 2) {
-          const { y, nx, ny } = getCurve(x, timeSec);
+          const { y, nx, ny } = getCurve(x);
           const px = x - nx * halfThick;
           const py = y - ny * halfThick;
           if (x === xStart) ctx.moveTo(px, py);
           else ctx.lineTo(px, py);
         }
         for (let x = xEnd; x >= xStart; x -= 2) {
-          const { y, nx, ny } = getCurve(x, timeSec);
+          const { y, nx, ny } = getCurve(x);
           const px = x + nx * halfThick;
           const py = y + ny * halfThick;
           ctx.lineTo(px, py);
@@ -419,7 +420,7 @@ export const RibbonTypography: React.FC<RibbonTypographyProps> = ({ className = 
         // Wave crest highlight and wave trough shading
         const lightPassStep = 6;
         for (let x = xStart; x <= xEnd; x += lightPassStep) {
-          const { y, angle } = getCurve(x, timeSec);
+          const { y, angle } = getCurve(x);
           const lightFactor = Math.sin(angle * 2.2);
 
           if (lightFactor > 0.15) {
@@ -433,7 +434,7 @@ export const RibbonTypography: React.FC<RibbonTypographyProps> = ({ className = 
         ctx.restore();
 
         // --------------------------------------------------------------------
-        // D. Accurate Text-On-Path Typography Alignment
+        // D. Accurate Text-On-Path Typography (Moving along stationary ribbon)
         // --------------------------------------------------------------------
         // Render enough loop repetitions to cover the full width plus margins
         const minX = -100;
@@ -458,10 +459,10 @@ export const RibbonTypography: React.FC<RibbonTypographyProps> = ({ className = 
 
                 // Only render glyphs within visible horizontal bounds
                 if (charCenterX >= minX - 20 && charCenterX <= maxX + 20) {
-                  const { y, angle } = getCurve(charCenterX, timeSec);
+                  const { y, angle } = getCurve(charCenterX);
 
                   ctx.save();
-                  // Center directly on the ribbon spine curve
+                  // Center directly on the stationary ribbon spine curve
                   ctx.translate(charCenterX, y);
                   // Tangent rotation perfectly conforms to curvature
                   ctx.rotate(angle);
