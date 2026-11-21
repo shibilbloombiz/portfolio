@@ -294,7 +294,7 @@ export const ADVANCED_DEFAULTS = {
   studSize: 4,
   floorLift: 16,
   peachColor: "#F0D6C9",
-  innerColor: "#A8442A",
+  innerColor: "#10549A",
   studColor: "#8E8882",
   lightAngle: 135,
   lightHeight: 50,
@@ -314,7 +314,7 @@ export const ADVANCED_DEFAULTS = {
 export const PRIMARY_DEFAULTS = {
   speed: 50,
   size: 125,
-  accent: "#F2490C",
+  accent: "#176FC4",
   background: "#E9D8CB",
   radius: 3,
   lift: 100

@@ -8,8 +8,8 @@
   --adm-ink-subtle: #8a847e;
   --adm-border: rgba(18, 17, 16, 0.12);
   --adm-border-light: rgba(18, 17, 16, 0.06);
-  --adm-accent: #ff4d00;
-  --adm-accent-hover: #e04400;
+  --adm-accent: #176FC4;
+  --adm-accent-hover: #10549A;
   --adm-success: #1b8a5a;
   --adm-success-bg: rgba(27, 138, 90, 0.1);
   --adm-warning: #d97706;
@@ -241,7 +241,7 @@
   font-weight: 600;
   padding: 0.15rem 0.45rem;
   border-radius: var(--adm-radius-full);
-  background: rgba(255, 77, 0, 0.15);
+  background: rgba(23, 111, 196, 0.15);
   color: var(--adm-accent);
 }
 
@@ -993,7 +993,7 @@
 }
 
 .admin-badge--featured {
-  background: rgba(255, 77, 0, 0.12);
+  background: rgba(23, 111, 196, 0.12);
   color: var(--adm-accent);
 }
 
@@ -1811,7 +1811,7 @@
 
 .admin-media-picker__item:hover {
   border-color: var(--adm-accent);
-  box-shadow: 0 0 0 2px rgba(255, 77, 0, 0.2);
+  box-shadow: 0 0 0 2px rgba(23, 111, 196, 0.2);
 }
 
 .admin-media-picker__thumb {

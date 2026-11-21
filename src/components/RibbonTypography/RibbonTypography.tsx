@@ -42,28 +42,28 @@ export const RibbonTypography: React.FC<RibbonTypographyProps> = ({ className = 
     const items: RibbonItem[] = [
       {
         segments: [
-          { text: '5+', color: '#F15A24' },
+          { text: '5+', color: '#176FC4' },
           { text: ' YEARS OF EXPERIENCE', color: '#160D08' },
         ],
         plainText: '5+ YEARS OF EXPERIENCE',
       },
       {
         segments: [
-          { text: '100+', color: '#F15A24' },
+          { text: '100+', color: '#176FC4' },
           { text: ' BRANDS BUILT', color: '#160D08' },
         ],
         plainText: '100+ BRANDS BUILT',
       },
       {
         segments: [
-          { text: '200+', color: '#F15A24' },
+          { text: '200+', color: '#176FC4' },
           { text: ' HAPPY CLIENTS', color: '#160D08' },
         ],
         plainText: '200+ HAPPY CLIENTS',
       },
       {
         segments: [
-          { text: 'CREATIVE', color: '#F15A24' },
+          { text: 'CREATIVE', color: '#176FC4' },
           { text: ' THINKING', color: '#160D08' },
         ],
         plainText: 'CREATIVE THINKING',
@@ -71,16 +71,16 @@ export const RibbonTypography: React.FC<RibbonTypographyProps> = ({ className = 
       {
         segments: [
           { text: 'DIGITAL ', color: '#160D08' },
-          { text: 'INNOVATION', color: '#F15A24' },
+          { text: 'INNOVATION', color: '#176FC4' },
         ],
         plainText: 'DIGITAL INNOVATION',
       },
       {
         segments: [
           { text: 'INDIA', color: '#160D08' },
-          { text: ' · ', color: '#F15A24' },
+          { text: ' · ', color: '#176FC4' },
           { text: 'UAE', color: '#160D08' },
-          { text: ' · ', color: '#F15A24' },
+          { text: ' · ', color: '#176FC4' },
           { text: 'KSA', color: '#160D08' },
         ],
         plainText: 'INDIA · UAE · KSA',
