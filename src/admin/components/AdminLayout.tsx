@@ -64,7 +64,13 @@ export const AdminLayout: React.FC = () => {
     return (
       <div className="admin-loading-screen">
         <div className="admin-loading-screen__inner">
-          <span className="admin-loading-screen__logo">blo<span className="admin-loading-screen__logo-accent">∞</span>mbiz</span>
+          <img
+            src="/images/logos/bloombiz-logo-dark.png"
+            alt="BloomBiz Techno Hub"
+            className="admin-loading-screen__logo-img"
+            width="150"
+            height="41"
+          />
           <p className="admin-loading-screen__text">Loading portfolio administration system...</p>
         </div>
       </div>

@@ -47,9 +47,15 @@ export const AdminLogin: React.FC = () => {
     <div className="admin-login-page">
       <div className="admin-login-card">
         <div className="admin-login-card__header">
-          <span className="admin-login-card__brand">
-            blo<span className="admin-sidebar__logo-accent">∞</span>mbiz
-          </span>
+          <div className="admin-login-card__brand">
+            <img
+              src="/images/logos/bloombiz-logo-dark.png"
+              alt="BloomBiz Techno Hub"
+              className="admin-login-card__logo-img"
+              width="160"
+              height="44"
+            />
+          </div>
           <h1 className="admin-login-card__title">Portfolio CMS</h1>
           <p className="admin-login-card__subtitle">
             Enter authorized administrator credentials to manage portfolio assets and systems.

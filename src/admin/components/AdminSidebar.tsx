@@ -38,9 +38,13 @@ export const AdminSidebar: React.FC<AdminSidebarProps> = ({ isOpen, onClose, sta
         {/* Brand header */}
         <div className="admin-sidebar__header">
           <Link to="/admin" className="admin-sidebar__brand" onClick={onClose}>
-            <span className="admin-sidebar__logo">
-              blo<span className="admin-sidebar__logo-accent">∞</span>mbiz
-            </span>
+            <img
+              src="/images/logos/bloombiz-logo-dark.png"
+              alt="BloomBiz Techno Hub"
+              className="admin-sidebar__logo-img"
+              width="120"
+              height="33"
+            />
             <span className="admin-sidebar__badge">CMS</span>
           </Link>
 
