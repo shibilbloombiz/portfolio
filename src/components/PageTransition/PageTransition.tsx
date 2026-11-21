@@ -5,12 +5,12 @@ import { projects } from '../../data/projects';
 
 /**
  * PageTransition
- * Elegant, silky smooth 2-phase architectural curtain wipe transition:
- * 1. Upon navigation, 14 architectural louvers sweep down smoothly over the page.
- * 2. Once covered, the route switches instantly and scrolls to the top without visual pop.
- * 3. The curtain then lifts away upward with a harmonic wave stagger and cubic ease,
- *    while the incoming page content subtly breathes into position.
- * Also provides seamless fallback for browser Back/Forward navigation.
+ * Snappy, responsive, silky smooth 2-phase architectural curtain wipe transition:
+ * 1. Upon link click, 14 architectural louvers sweep down smoothly (~0.22s).
+ * 2. Route switches and window scrolls to top while screen is covered.
+ * 3. Curtain gracefully lifts upward (~0.32s) with harmonic stagger and cubic ease.
+ * 4. Pointer events are never permanently blocked; clicks are never swallowed.
+ * 5. Back/Forward browser navigation executes smooth reveal automatically.
  */
 export const PageTransition: React.FC = () => {
   const location = useLocation();
@@ -21,6 +21,7 @@ export const PageTransition: React.FC = () => {
   const [tone, setTone] = useState<string>('var(--main)');
   const isFirstMount = useRef(true);
   const lastPathname = useRef(location.pathname);
+  const safetyTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   // Helper to resolve tone from target pathname
   const getToneForPath = (path: string): string => {
@@ -36,10 +37,9 @@ export const PageTransition: React.FC = () => {
 
   // Phase 2: Smooth Curtain Reveal (Lift off)
   const revealCurtain = useCallback((targetTone: string) => {
-    setTone(targetTone);
-    setIsTransitioning(true);
-    isTransitioningRef.current = true;
+    if (safetyTimeoutRef.current) clearTimeout(safetyTimeoutRef.current);
 
+    setTone(targetTone);
     const cols = colsRef.current ? Array.from(colsRef.current.children) : [];
     if (!cols.length) {
       setIsTransitioning(false);
@@ -49,99 +49,119 @@ export const PageTransition: React.FC = () => {
 
     gsap.killTweensOf(cols);
 
-    // Ensure columns are fully covering from top before lifting
-    gsap.set(cols, {
-      scaleY: 1,
-      transformOrigin: 'top center',
-      clipPath: 'none',
-      opacity: 1,
-    });
+    // Fast, elegant upward lift with harmonic wave stagger
+    gsap.fromTo(
+      cols,
+      { scaleY: 1, transformOrigin: 'top center', opacity: 1 },
+      {
+        scaleY: 0,
+        duration: 0.32,
+        stagger: {
+          amount: 0.14,
+          from: 'start',
+          ease: 'power2.inOut',
+        },
+        ease: 'power3.out',
+        onComplete: () => {
+          setIsTransitioning(false);
+          isTransitioningRef.current = false;
+        },
+      }
+    );
 
-    // Reveal: smooth upward lift with harmonic wave stagger and cubic ease
-    gsap.to(cols, {
-      scaleY: 0,
-      duration: 0.58,
-      delay: 0.02,
-      stagger: {
-        amount: 0.22,
-        from: 'start',
-        ease: 'power2.inOut',
-      },
-      ease: 'power3.inOut',
-      onComplete: () => {
-        setIsTransitioning(false);
-        isTransitioningRef.current = false;
-      },
-    });
-
-    // Gently breathe incoming content into position
+    // Content gently breathes into position
     gsap.fromTo(
       '#main',
-      { opacity: 0.9, y: 12 },
+      { opacity: 0.94, y: 8 },
       {
         opacity: 1,
         y: 0,
-        duration: 0.55,
-        delay: 0.08,
+        duration: 0.35,
         ease: 'power2.out',
         clearProps: 'transform,opacity',
       }
     );
+
+    // Safety watchdog: guaranteed release within 600ms
+    safetyTimeoutRef.current = setTimeout(() => {
+      setIsTransitioning(false);
+      isTransitioningRef.current = false;
+    }, 600);
   }, []);
 
   // Phase 1 + Phase 2: Full interactive transition on link click
   const transitionTo = useCallback(
     (targetHref: string) => {
-      if (isTransitioningRef.current) return;
+      if (safetyTimeoutRef.current) clearTimeout(safetyTimeoutRef.current);
 
       const targetTone = getToneForPath(targetHref);
       setTone(targetTone);
-      setIsTransitioning(true);
-      isTransitioningRef.current = true;
 
       const cols = colsRef.current ? Array.from(colsRef.current.children) : [];
       if (!cols.length) {
         navigate(targetHref);
+        window.scrollTo(0, 0);
         return;
       }
 
+      // If already transitioning, fast-track route change directly
+      if (isTransitioningRef.current) {
+        navigate(targetHref);
+        window.scrollTo(0, 0);
+        revealCurtain(targetTone);
+        return;
+      }
+
+      setIsTransitioning(true);
+      isTransitioningRef.current = true;
       gsap.killTweensOf(cols);
 
-      // Phase 1: Columns glide DOWN from top to smoothly drape over page
+      // Phase 1: Columns glide down smoothly over page (~0.22s)
       gsap.set(cols, {
         transformOrigin: 'top center',
         scaleY: 0,
-        clipPath: 'none',
         opacity: 1,
       });
 
       gsap.to(cols, {
         scaleY: 1,
-        duration: 0.36,
+        duration: 0.22,
         stagger: {
-          amount: 0.16,
+          amount: 0.1,
           from: 'start',
           ease: 'power2.inOut',
         },
         ease: 'power3.inOut',
         onComplete: () => {
-          // Page is now fully covered by the curtain
+          // Immediately route to target and scroll top
           navigate(targetHref);
           window.scrollTo(0, 0);
 
-          // Allow DOM to mount new route, then gracefully reveal
+          // Free pointer events immediately so incoming page is never locked
+          setIsTransitioning(false);
+          isTransitioningRef.current = false;
+
+          // Seamless Phase 2 lift off
           requestAnimationFrame(() => {
-            setTimeout(() => {
-              revealCurtain(targetTone);
-            }, 25);
+            revealCurtain(targetTone);
           });
         },
       });
+
+      // Safety watchdog: ensure transition state never locks up if interrupted
+      safetyTimeoutRef.current = setTimeout(() => {
+        if (isTransitioningRef.current) {
+          navigate(targetHref);
+          window.scrollTo(0, 0);
+          setIsTransitioning(false);
+          isTransitioningRef.current = false;
+        }
+      }, 700);
     },
     [navigate, revealCurtain]
   );
 
-  // Intercept standard user link clicks for smooth 2-phase curtain transition
+  // Intercept user link clicks for smooth 2-phase curtain transition
   useEffect(() => {
     const handleDocumentClick = (e: MouseEvent) => {
       // Ignore modified clicks (cmd/ctrl for new tab) or default-prevented events
@@ -171,7 +191,7 @@ export const PageTransition: React.FC = () => {
       const currentUrl = new URL(window.location.href);
       const targetUrl = new URL(href, window.location.origin);
 
-      // Same page with hash anchor (e.g. /#work or /#hello) -> let native smooth scrolling handle it
+      // Same page with hash anchor (e.g. /#work or /#hello) -> native scroll
       if (currentUrl.pathname === targetUrl.pathname && targetUrl.hash) {
         return;
       }
@@ -192,10 +212,11 @@ export const PageTransition: React.FC = () => {
     document.addEventListener('click', handleDocumentClick, { capture: true });
     return () => {
       document.removeEventListener('click', handleDocumentClick, { capture: true });
+      if (safetyTimeoutRef.current) clearTimeout(safetyTimeoutRef.current);
     };
   }, [transitionTo]);
 
-  // Fallback listener for browser Back/Forward navigation or direct location changes
+  // Fallback listener for browser Back/Forward navigation
   useEffect(() => {
     if (isFirstMount.current) {
       isFirstMount.current = false;
@@ -208,12 +229,7 @@ export const PageTransition: React.FC = () => {
     }
     lastPathname.current = location.pathname;
 
-    // If an interactive transition is already driving this change, do not double-trigger
-    if (isTransitioningRef.current) {
-      return;
-    }
-
-    // Direct route change (e.g. browser back/forward button): execute smooth reveal
+    // Direct route change via back/forward: smooth reveal
     window.scrollTo(0, 0);
     const targetTone = getToneForPath(location.pathname);
     revealCurtain(targetTone);
@@ -248,12 +264,12 @@ export const AnimatedGrid: React.FC<{ isVisible: boolean }> = ({ isVisible }) =>
     <div
       data-animated-grid=""
       className={`animated-grid ${isVisible ? 'is-visible' : ''}`}
-      style={{ display: isVisible ? 'block' : 'none' }}
+      aria-hidden="true"
     >
       <div className="container-2 is--full-height">
         <div className="animated-grid__row">
           {Array.from({ length: 12 }).map((_, i) => (
-            <div key={i} data-animated-grid-col="" className="animated-grid__col"></div>
+            <div key={i} className="animated-grid__col"></div>
           ))}
         </div>
       </div>
